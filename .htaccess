@@ -1,0 +1,74 @@
+<IfModule mod_deflate.c>
+    <IfModule mod_filter.c>
+        # Default filter : deflate
+        # =====================
+        SetOutputFilter DEFLATE
+
+        # Netscape 4.x has some problems...
+        # =========================================
+        BrowserMatch ^Mozilla/4 gzip-only-text/html
+
+        # Netscape 4.06-4.08 have some more problems
+        # =====================================
+        BrowserMatch ^Mozilla/4.0[678] no-gzip
+
+        # MSIE masquerades as Netscape, but it is fine
+        # ===============================================
+        BrowserMatch bMSIE !no-gzip !gzip-only-text/html
+
+        # Do not compress images
+        # ===============================================================
+        SetEnvIfNoCase Request_URI .(?:gif|jpe?g|png)$ no-gzip dont-vary
+
+        # The compress level 1(lowest)-9(highest)
+        # ====================================================
+        # DeflateCompressionLevel 9
+        AddOutputFilterByType DEFLATE text/plain
+        AddOutputFilterByType DEFLATE text/html
+        AddOutputFilterByType DEFLATE text/xml
+        AddOutputFilterByType DEFLATE text/css
+        AddOutputFilterByType DEFLATE application/xhtml+xml
+        AddOutputFilterByType DEFLATE application/xml
+        AddOutputFilterByType DEFLATE application/rss+xml
+        AddOutputFilterByType DEFLATE application/atom_xml
+        AddOutputFilterByType DEFLATE application/x-javascript
+        AddOutputFilterByType DEFLATE application/x-httpd-php
+        AddOutputFilterByType DEFLATE application/javascript 
+        AddOutputFilterByType DEFLATE application/vnd.ms-excel 
+        AddOutputFilterByType DEFLATE application/json
+    </IfModule>
+ 
+    # Make sure proxies do not deliver the wrong content
+    # ======================
+    <IfModule mod_headers.c>
+		Header set Vary "Accept-Encoding"
+    </IfModule>
+</IfModule>
+
+<IfModule mod_expires.c>
+	ExpiresActive On
+	FileETag none
+    <IfModule mod_headers.c>
+		Header unset ETag
+		Header unset Pragma
+		Header set Vary "Accept-Encoding"
+        <FilesMatch "\.(js|css|pdf|gif|png|jpg|jpeg|svg|ico|js\.gz|css\.gz)$">
+                Header set Cache-Control "max-age=3600, public"
+        </FilesMatch>
+    </IfModule>
+</IfModule>
+<IfModule mod_rewrite.c>
+	# Turn on URL rewriting
+	RewriteEngine On
+	DirectoryIndex index.php index.html
+	
+	# Convierte los ficheros versionados de JS y CSS a su version original.
+	RewriteRule ^(.*)\.([0-9]*)\.(css|js)$ $1\.$3 [L]
+
+	# Allow all files that not exists, be called by index.php
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteCond $1 !\.php$
+	RewriteCond $1 !^(index\.php|robots\.txt|favicon\.ico)
+	RewriteRule ^(.*)$ /index.php?/$1 [QSA,L]
+</IfModule>
