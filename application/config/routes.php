@@ -61,10 +61,14 @@ $_ROUTES = array(
 	'\w{2}/category/(:any)' => 'category/index',
 	'\w{2}/search' => 'search/index',
 		
-	'about-us' => 'about_us/index',
-	'\w{2}/about-us' => 'about_us/index',
-	'about-us' => 'about_us/index',
-	'\w{2}/about-us' => 'about_us/index',
+	'about-us' => 'about_us/about_us',
+	'\w{2}/about-us' => 'about_us/about_us',
+	'contact-us' => 'about_us/contact_us',
+	'\w{2}/contact-us' => 'about_us/contact_us',
+	'partners' => 'about_us/partners',
+	'\w{2}/partners' => 'about_us/partners',
+	'editorial-chart' => 'about_us/editorial_chart',
+	'\w{2}/editorial-chart' => 'about_us/editorial_chart',
 );
 
 foreach($_ROUTES as $r => $data) {
