@@ -69,6 +69,9 @@ $_ROUTES = array(
 	'\w{2}/partners' => 'about_us/partners',
 	'editorial-chart' => 'about_us/editorial_chart',
 	'\w{2}/editorial-chart' => 'about_us/editorial_chart',
+		
+	'programme/(:any)/(:any)' => 'product/index',
+	'\w{2}/programme/(:any)/(:any)' => 'product/index',
 );
 
 foreach($_ROUTES as $r => $data) {
