@@ -46,6 +46,9 @@
 	<li><a href="/es/fasdfsfs/">http://at-internet.local/es/fasdfsfs/</a></li>
 	<li><a href="/en/fasdfsfsfasdfsfs/">http://at-internet.local/en/fasdfsfsfasdfsfs/</a></li>
 	<li><a href="/de/aaasdasdasdasdasdas/asdasdasdasas/">http://at-internet.local/de/aaasdasdasdasdasdas/asdasdasdasas/</a></li>
+	<li><a href="/de/programme/category-1/producto-error-404/">http://at-internet.local/de/programme/category-1/producto-error-404/</a></li>
+	<li><a href="/de/category/categoria-error-404/">http://at-internet.local/de/category/categoria-error-404/</a></li>
+	<li><a href="/de/tag/tag-error-404/">http://at-internet.local/de/tag/tag-error-404/</a></li>
 </ul>
 
 <ul>

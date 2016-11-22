@@ -103,23 +103,44 @@ $(function() {
 	};
 	
 	/**
+	 * Comprueba si la página actual ha dado un código 404, para ello buscamos $('div#website.page-not-found')
+	 * Aunque también puede tratarse de 
+	 * 	- Tag que no existe: $('.ui-messages-error')
+	 *  - Category que no existe: $('.ui-messages-error')
+	 *  - Video que no existe:  $('.portlet-msg-error')
+	 */
+	var checkErrorPage = function() {
+		if($('div#website.page-not-found').length > 0) {
+			return true;
+		} else if($('.ui-messages-error').length > 0) {
+			return true;
+		} else if($('.portlet-msg-error').length > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	};
+	
+	/**
 	 * Objeto que contiene los datos de los segmentos de la URL actual, idioma y determina que tipo de página estamos visitando.
 	 */ 
 	var initURLObject = (function() {
 		var instance;
 		
 		function createInstance() {
+			var is_error_page = checkErrorPage();
+			
 			return {
 				'url_path' : url_segments,
 				'previous_page' : (typeof(Storage) !== "undefined" && localStorage.previous_page != "") ? localStorage.previous_page : "",
 				'previous_chapter' : (typeof(Storage) !== "undefined" && localStorage.previous_chapter != "") ? localStorage.previous_chapter : "",
 				'lang' : lang,
 				'home' : checkHomePage(),
-				'category' : (url_segments.indexOf("category") === -1 ) ? false : true,
-				'tag' : (url_segments.indexOf("tag") === -1 ) ? false : true,
+				'category' : (!is_error_page && url_segments.indexOf("category") > -1 ) ? true : false,
+				'tag' : (!is_error_page && url_segments.indexOf("tag") > -1 ) ? true : false,
 				'search' : (url_segments.indexOf("search") === -1 ) ? false : true,
-				'error' : false,
-				'video' : (url_segments.indexOf("programme") === -1 ) ? false : true,
+				'error' : is_error_page,
+				'video' : (!is_error_page && url_segments.indexOf("programme") > -1 ) ? true : false,
 				'about_us' : checkAboutUsPage()
 			};
 		}
@@ -146,9 +167,11 @@ $(function() {
 						localStorage.previous_chapter = "tags";
 						localStorage.previous_page = (typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] : "";
 					} else if(current_url.search) {
-						// TODO
+						localStorage.previous_chapter = "";
+						localStorage.previous_page = "search_results";
 					} else if(current_url.error) {
-						// TODO
+						localStorage.previous_chapter = "";
+						localStorage.previous_page = "error_page";
 					} else if(current_url.video) {
 						localStorage.previous_chapter = "product_page";
 						localStorage.previous_page = (typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] : "";
@@ -214,15 +237,21 @@ $(function() {
 	/**
 	 * Dependiendo de en qué página nos encontremos. En el plan de marcaje se han definido variables 
 	 * personalizadas que hay que enviar a la herramienta de analítica.
-	 * TODO FIXME XXX Pendiente de implementar.
 	 */
 	var getVariablesPaginaPersonalizadas = function() {
 		var current_url = initURLObject.getInstance();
+		
 		if(current_url.error) {
-			alert('setting variable Personaliza Error');
+			var variablesPaginaPersonalizadas = {
+				1 : '404',
+				2 : (typeof(Storage) !== "undefined" && localStorage.previous_page != "") ? '[' + localStorage.previous_page + ']' : '',
+				3 : '[' + window.location.href + ']'
+			};
 		} else if(current_url.search) {
-			alert('setting variable Personaliza Search');
+			var variablesPaginaPersonalizadas = {};
 		}
+		
+		return (typeof variablesPaginaPersonalizadas !== "undefined") ? variablesPaginaPersonalizadas : null;
 	};
 	
 	/*

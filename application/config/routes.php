@@ -56,9 +56,17 @@ $route['translate_uri_dashes'] = FALSE;
 $_ROUTES = array(
 	'(es|en|de)' => 'home/index',
 	'\w{2}/home' => 'home/index',
+	
+	'tag/tag-error-404' => 'tag/error',
+	'\w{2}/tag/tag-error-404' => 'tag/error',
+	'tag/(:any)' => 'tag/index',
 	'\w{2}/tag/(:any)' => 'tag/index',
+	
+	'category/categoria-error-404' => 'category/error',
+	'\w{2}/category/categoria-error-404' => 'category/error',
 	'category/(:any)' => 'category/index',
 	'\w{2}/category/(:any)' => 'category/index',
+	
 	'\w{2}/search' => 'search/index',
 		
 	'about-us' => 'about_us/about_us',
@@ -69,7 +77,9 @@ $_ROUTES = array(
 	'\w{2}/partners' => 'about_us/partners',
 	'editorial-chart' => 'about_us/editorial_chart',
 	'\w{2}/editorial-chart' => 'about_us/editorial_chart',
-		
+
+	'programme/(:any)/producto-error-404' => 'product/error',
+	'\w{2}/programme/(:any)/producto-error-404' => 'product/error',
 	'programme/(:any)/(:any)' => 'product/index',
 	'\w{2}/programme/(:any)/(:any)' => 'product/index',
 );
