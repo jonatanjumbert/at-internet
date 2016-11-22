@@ -16,7 +16,22 @@ class MY_Controller extends MX_Controller {
 	 */
 	public $level2ID = "1";
 	
+	public $language = 'en-US';
+	
 	public function __construct() {
 		parent::__construct();
+		
+		$first_param = $this->uri->segment(1, 'en');
+		$first_param = (strlen($first_param) > 2) ? 'en' : $first_param;
+		
+		if($first_param == 'en') {
+			$this->language = 'en-US';
+		} else if($first_param == 'es') {
+			$this->language = 'es-ES';
+		} else if($first_param == 'de') {
+			$this->language = 'de-DE';
+		} else {
+			$this->language = 'en-US';
+		}
 	}
 }

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es-ES">
+<html lang="<?php echo $language; ?>">
 	<head>
 		<title>Category ERROR 404</title>
 		<script>var site_id = '<?php echo $siteID; ?>'; var level2Id = <?php echo $level2ID; ?>;</script>

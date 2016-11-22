@@ -7,10 +7,10 @@ class category extends MY_Controller {
 	}
 	
 	public function index() {
-		$this->load->view('category/index', array('siteID' => $this->siteID, 'level2ID' => $this->level2ID));
+		$this->load->view('category/index', array('siteID' => $this->siteID, 'level2ID' => $this->level2ID, 'language' => $this->language));
 	}
 	
 	public function error() {
-		$this->load->view('category/error', array('siteID' => $this->siteID, 'level2ID' => $this->level2ID));
+		$this->load->view('category/error', array('siteID' => $this->siteID, 'level2ID' => $this->level2ID, 'language' => $this->language));
 	}
 }
