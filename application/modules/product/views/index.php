@@ -17,7 +17,13 @@
 			</div>
 			<div style="float:right; width: 49%">
 				<?php $this->load->view('urls_external'); ?>
-				
+
+				<ul class="inline tags-list" id="tags-list" data-tags="tag-1|tag-2">
+					<li>Tags relacionados</li>
+					<li><a href="/es/tag/tag-1/" />tag-1</li>
+					<li><a href="/es/tag/tag-2/" />tag-2</li>
+				</ul>
+
 				<h3>Debugging JS Data:</h3>
 				<pre id="var_dump"></pre>
 			</div>	

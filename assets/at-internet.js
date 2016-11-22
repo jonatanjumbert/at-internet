@@ -11,7 +11,6 @@ $(function() {
 	var siteID = null;
 	var level2 = null;
 	var lang = "es";
-	var sendData = false;
 	
 	/**
 	 * Guarda en url_segments un array con los segmentos de la URL actual.
@@ -105,16 +104,12 @@ $(function() {
 	/**
 	 * Comprueba si la página actual ha dado un código 404, para ello buscamos $('div#website.page-not-found')
 	 * Aunque también puede tratarse de 
-	 * 	- Tag que no existe: $('.ui-messages-error')
-	 *  - Category que no existe: $('.ui-messages-error')
-	 *  - Video que no existe:  $('.portlet-msg-error')
+	 * 	- Tag / Category / Video que no existe: $('.ui-messages-error-summary')
 	 */
 	var checkErrorPage = function() {
 		if($('div#website.page-not-found').length > 0) {
 			return true;
-		} else if($('.ui-messages-error').length > 0) {
-			return true;
-		} else if($('.portlet-msg-error').length > 0) {
+		} else if($('.ui-messages-error-summary').length > 0) {
 			return true;
 		} else {
 			return false;
@@ -235,23 +230,78 @@ $(function() {
 	};
 	
 	/**
-	 * Dependiendo de en qué página nos encontremos. En el plan de marcaje se han definido variables 
+	 * Si estamos en la página de búsqueda, según el plan de marcaje se han definido variables 
 	 * personalizadas que hay que enviar a la herramienta de analítica.
 	 */
-	var getVariablesPaginaPersonalizadas = function() {
-		var current_url = initURLObject.getInstance();
+	var getVariablesPaginaBusqueda = function() {
+		var result = {};
 		
-		if(current_url.error) {
-			var variablesPaginaPersonalizadas = {
-				1 : '404',
-				2 : (typeof(Storage) !== "undefined" && localStorage.previous_page != "") ? '[' + localStorage.previous_page + ']' : '',
-				3 : '[' + window.location.href + ']'
-			};
-		} else if(current_url.search) {
-			var variablesPaginaPersonalizadas = {};
+		if($('form#_search_WAR_europarltv_search_\\:formSearch').length > 0) {
+			$('form#_search_WAR_europarltv_search_\\:formSearch').children('input').each(function () {
+				if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:inputTextSearchBy") {
+					result[1] = "[" + this.value + "]";
+				} else if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:calendarFrom_input") {
+					var current_value = this.value;
+					var current_value_split = current_value.split('/');
+					if(current_value_split.length == 3) {
+						var send_value = parseInt("" + current_value_split[2] + current_value_split[1] + current_value_split[0], 10);
+						result[2] = "[" + send_value + "]";
+					}
+				} else if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:calendarTo_input") {
+					var current_value = this.value;
+					var current_value_split = current_value.split('/');
+					if(current_value_split.length == 3) {
+						var send_value = parseInt("" + current_value_split[2] + current_value_split[1] + current_value_split[0], 10);
+						result[3] = "[" + send_value + "]";
+					}
+				} else if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:types_focus") {
+					result[4] = "[" + this.value + "]";
+				} else if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:category_focus") {
+					result[5] = "[" + this.value + "]";
+				} else if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:meps_hinput") {
+					var current_value = this.value;
+					var send_value = "[";
+					
+					if($.isArray(current_value)) {
+						$.each(current_value, function(i, val) {
+							send_value += val;
+							if(i + 1 < current_value.length) {
+								send_value += "|";
+							}
+						});
+					} else {
+						var current_value_split = current_value.split(',');
+						if(current_value_split.length > 0) {
+							$.each(current_value_split, function(i, val) {
+								send_value += val;
+								if(i + 1 < current_value_split.length) {
+									send_value += "|";
+								}
+							});
+						}
+					}
+					send_value += "]";
+					
+					if(send_value != "[]") {
+						result[6] = "[" + send_value + "]";
+					}
+				}
+			});
 		}
 		
-		return (typeof variablesPaginaPersonalizadas !== "undefined") ? variablesPaginaPersonalizadas : null;
+		return result;
+	};
+	
+	/**
+	 * Si estamos en la página de error, según el plan de marcaje se han definido variables 
+	 * personalizadas que hay que enviar a la herramienta de analítica.
+	 */
+	var getVariablesPaginaError = function() {
+		return result = {
+			1 : '404',
+			2 : (typeof(Storage) !== "undefined" && localStorage.previous_page != "") ? '[' + localStorage.previous_page + ']' : '',
+			3 : '[' + window.location.href + ']'
+		};
 	};
 	
 	/*
@@ -280,37 +330,96 @@ $(function() {
 	// Dependiendo de la página que se esté visualizando se envian unos datos u otros.
 	if(current_url.home) {
 		tag.page.set({name: 'homepage', chapter1: 'hompage', level2: level2});
-		sendData = true;
+		tag.customVars.set({site: getVariablesSitioPersonalizadas()});
+		tag.dispatch();
 	} else if(current_url.category) {
 		if(typeof current_url.url_path[2] !== "undefined") {
 			tag.page.set({name: current_url.url_path[2], chapter1: 'categories', level2: level2});
-			sendData = true;
+			tag.customVars.set({site: getVariablesSitioPersonalizadas()});
+			tag.dispatch();
 		}
 	} else if(current_url.tag) {
 		if(typeof current_url.url_path[2] !== "undefined") {
 			tag.page.set({name: current_url.url_path[2], chapter1: 'tags', level2: level2});
-			sendData = true;
+			tag.customVars.set({site: getVariablesSitioPersonalizadas()});
+			
+			// Segun el plan de marcaje hay que enviar los tags relacionados de las página de tag.
+			if($('#tags-list').length > 0) {
+				var lista_de_tags = $('#tags-list').attr('data-tags');
+				if(lista_de_tags !== "undefined") {
+					var lista_de_tags_split = lista_de_tags.split('|');
+					if(lista_de_tags_split.length > 0) {
+						tag.tags.set({keywords: lista_de_tags_split});
+					}
+				}
+			}
+			
+			tag.dispatch();
 		}
 	} else if(current_url.search) {
-		// TODO
-		getVariablesPaginaPersonalizadas();
+		tag.page.set({name: 'search_results', level2: level2});
+		tag.customVars.set({
+			site : getVariablesSitioPersonalizadas(),
+			page : getVariablesPaginaBusqueda()
+		});
+		
+		if($("#_search_WAR_europarltv_search_\\:formSearch\\:inputTextSearchBy").length > 0) {
+			tag.internalSearch.set({keyword: $("#_search_WAR_europarltv_search_\\:formSearch\\:inputTextSearchBy").val(), resultPageNumber: '1'});
+		}
+		
+		tag.dispatch();
 	} else if(current_url.error) {
-		// TODO
+		tag.page.set({name: 'error_page', level2: level2});
+		tag.customVars.set({
+			site : getVariablesSitioPersonalizadas(),
+			page : getVariablesPaginaError()
+		});
+		tag.dispatch();
 	} else if(current_url.video) {
 		if(typeof current_url.url_path[3] !== "undefined") {
 			tag.page.set({name: current_url.url_path[3], chapter1: 'product_page', chapter2 : current_url.url_path[2], level2: level2});
-			sendData = true;
+			tag.customVars.set({site: getVariablesSitioPersonalizadas()});
+			
+			// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
+			if($('#tags-list').length > 0) {
+				var lista_de_tags = $('#tags-list').attr('data-tags');
+				if(lista_de_tags !== "undefined") {
+					var lista_de_tags_split = lista_de_tags.split('|');
+					if(lista_de_tags_split.length > 0) {
+						tag.tags.set({keywords: lista_de_tags_split});
+					}
+				}
+			}
+			
+			tag.dispatch();
 		}
 	} else if(current_url.about_us) {
-		// TODO
-	}
-	
-	if(sendData) {
+		tag.page.set({name: current_url.url_path[1], level2: level2});
 		tag.customVars.set({site: getVariablesSitioPersonalizadas()});
 		tag.dispatch();
 	}
 	
-	/********** JUST FOR DEBBUGING ****************/
+	// Evento personalizado que envia de nuevo los datos del buscador cuando se produce una petición AJAX.
+	$(document).on("change", "#_search_WAR_europarltv_search_\\:formSearch\\:inputTextSearchBy," +
+		"_search_WAR_europarltv_search_\\:formSearch\\:calendarFrom_input, " +
+		"_search_WAR_europarltv_search_\\:formSearch\\:calendarTo_input, " +
+		"_search_WAR_europarltv_search_\\:formSearch\\:types_focus," +
+		"_search_WAR_europarltv_search_\\:formSearch\\:category_focus," +
+		"_search_WAR_europarltv_search_\\:formSearch\\:meps_hinput", function() {
+		
+		tag.page.set({name: 'search_results', level2: level2});
+		tag.customVars.set({
+			site : getVariablesSitioPersonalizadas(),
+			page : getVariablesPaginaBusqueda()
+		});
+		tag.dispatch();
+	});
+
+	/** 
+	 * JUST FOR DEBBUGING
+	 * Muestra los datos de la página actual y a las variables de página y chapter anterior
+	 * guardados en localStorage que se enviarán a la herramienta de analítica web. 
+	 */
 	var var_dump = (function() {
 		var current_url = initURLObject.getInstance();
 		
