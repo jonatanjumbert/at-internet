@@ -26,7 +26,8 @@
 				
 				<h3>Video sample</h3>
 				<script src="https://kmc.europarltv.europa.eu/p/<?=KALTURA_PARTNER_ID?>/sp/<?=KALTURA_PARTNER_ID?>00/embedIframeJs/uiconf_id/<?=KALTURA_PLAYER_ID?>/partner_id/<?=KALTURA_PARTNER_ID?>"></script>
-				<div id="europarlamenttv_player" data-producer="productor-1" style="width:400px;height:330px;"></div> 
+				<span class="video-with-producer" data-producer="productor-1"></span>
+				<div id="europarlamenttv_player" style="width:400px;height:330px;"></div> 
 				<script>
 					var playerOptions = {
 						"targetId": 'europarlamenttv_player',
