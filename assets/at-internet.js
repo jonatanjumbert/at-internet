@@ -517,9 +517,23 @@ $(function() {
 		debugData({action : 'Click on Load More results button', pageData : pageData, internalSearData : internalSearData});
 	});
 	
-	// Cuando se selecciona uno de los videos de la página de resultados de búsqueda...
+	/**
+	 * Cuando se selecciona uno de los videos de la página de resultados de búsqueda, hay 
+	 * que notificar la keyword buscada, la página de resultados y la posición del resultado clicado.
+	 */
 	$(document).on("click", 'div#p_p_id_search_WAR_europarltv_search_ h2.title a', function() {
-		var pagina_resultados = $('div#_search_WAR_europarltv_search_\\:formSearch\\:initialResultsPanel div.videos-list').length;
+		var pagina_resultados = $(this).parent().parent().parent().prevAll().length;
+		var num_videos_delante = $(this).parent().parent().prevAll().length;
+		var num_videos_pagina = $('div.video-item', $(this).parent().parent().parent()).length;
+		
+		internalSearchData = {
+		    keyword: $("#_search_WAR_europarltv_search_\\:formSearch\\:inputTextSearchBy").val(),
+		    resultPageNumber: pagina_resultados + 1,
+		    resultPosition: ((pagina_resultados == 0) ? (num_videos_delante + 1) : ((num_videos_pagina * pagina_resultados) + (num_videos_delante + 1)))
+		};
+		tag.internalSearch.send(internalSearchData);
+		
+		debugData({action : 'Click on Search Result', internalSearchData : internalSearchData});
 	});
 	
 	/** 
