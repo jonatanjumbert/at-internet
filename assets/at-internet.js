@@ -40,6 +40,14 @@ $(function() {
 	};
 	
 	/**
+	 * Devuelve el último segmento de la URL pasada por parámetro.
+	 */
+	var getLastSegmentFromURL = function(url) {
+		var segments = url.split("/");
+		return segments.pop();
+	};
+	
+	/**
 	 * Guarda en url_segments un array con los segmentos de la URL actual.
 	 * Incluye como primer segmento el Idioma aunque se trate del Inglés y por defecto no aparezca en la URL.
 	 */
@@ -475,6 +483,8 @@ $(function() {
 	});
 	
 	/**
+	 * BUSCADOR
+	 * 
 	 * Evento personalizado que envía de nuevo los datos del buscador cuando se produce una petición AJAX.
 	 */ 
 	$(document).on("change", "#_search_WAR_europarltv_search_\\:formSearch\\:inputTextSearchBy," +
@@ -495,10 +505,12 @@ $(function() {
 		tag.customVars.set(customVars);
 		tag.dispatch();
 		
-		debugData({action : 'Search AJAX Request', pageData : pageData, customVars : customVars});
+		debugData({action : '[Search] Search AJAX Request', pageData : pageData, customVars : customVars});
 	});
 	
 	/**
+	 * BUSCADOR
+	 * 
 	 * Al clicar al botón para mostrar la siguiente página de resultados,
 	 * indicamos a la herramienta de Analítica web, la keyword y la página de resultados mostrada.
 	 */ 
@@ -514,10 +526,12 @@ $(function() {
 		tag.internalSearch.set(internalSearchData); 
 		tag.dispatch();
 		
-		debugData({action : 'Click on Load More results button', pageData : pageData, internalSearData : internalSearData});
+		debugData({action : '[Search] Click on Load More results button', pageData : pageData, internalSearData : internalSearData});
 	});
 	
 	/**
+	 * BUSCADOR
+	 * 
 	 * Cuando se selecciona uno de los videos de la página de resultados de búsqueda, hay 
 	 * que notificar la keyword buscada, la página de resultados y la posición del resultado clicado.
 	 */
@@ -532,9 +546,149 @@ $(function() {
 		    resultPageNumber: pagina_resultados + 1,
 		    resultPosition: ((pagina_resultados == 0) ? (num_videos_delante + 1) : ((num_videos_pagina * pagina_resultados) + (num_videos_delante + 1)))
 		};
+		
+		tag = initATInternetTag.getInstance();
 		tag.internalSearch.send(internalSearchData);
 		
-		debugData({action : 'Click on Search Result', internalSearchData : internalSearchData});
+		debugData({action : '[Search] Click on Search Result', internalSearchData : internalSearchData});
+	});
+	
+	/**
+	 * CLICKS
+	 * 
+	 * Cuando se clica un TAG, hay que enviar un evento de click a AT-INTERNET.
+	 * Ya sea en la página de tags o en la de producto.
+	 */
+	$(document).on("click", 'ul.tags-list a', function(e) {
+		var current_url = initURLObject.getInstance();
+		var clickData = {
+	        elem: $(this).get(0),
+	        name: getLastSegmentFromURL(window.location.href),
+	        chapter1: 'tags',
+	        chapter2: getLastSegmentFromURL($(this).attr('href')),
+	        chapter3: (current_url.tag) ? 'tags_page' : 'product_page',
+	        level2: level2,
+	        type: 'action'
+	    };
+		
+		tag = initATInternetTag.getInstance();
+		tag.clickListener.send(clickData);
+		
+		debugData({action : '[Click] on Tag', clickData : clickData});
+	});
+	
+	/**
+	 * CLICKS
+	 * 
+	 * Cuando se clica un TAG, hay que enviar un evento de click a AT-INTERNET.
+	 * Ya sea en la página de tags o en la de producto.
+	 */
+	$(document).on("click", 'ul.socialmedia-buttons a', function(e) {
+		var current_url = initURLObject.getInstance();
+		var clickData = {
+	        elem: $(this).get(0),
+	        name: $('span.ep_name', $(this)).html(),
+	        chapter1: 'share_video',
+	        chapter2 : (typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] : '', 
+	        level2: level2,
+	        type: 'action'
+	    };
+		
+		tag = initATInternetTag.getInstance();
+		tag.clickListener.send(clickData);
+		
+		debugData({action : '[Click] on Share link (video)', clickData : clickData});
+	});
+	
+	/**
+	 * CLICKS
+	 * 
+	 * Cuando se clica un enlace de compartir en las redes sociales del pie de página
+	 * hay que enviar un evento de click a AT-INTERNET.
+	 */
+	$(document).on("click", 'div#socialmedia div.ep_list ul li.ep_item a', function(e) {
+		var current_url = initURLObject.getInstance();
+		var clickData = {
+	        elem: $(this).get(0),
+	        name: $('span.ep_name', $(this)).html(),
+	        chapter1: 'share_page',
+	        level2: level2,
+	        type: 'action'
+	    };
+		
+		if(current_url.home) {
+			clickData.chapter2 = 'homepage';
+			clickData.chapter3 = 'homepage';
+		} else if(current_url.category) {
+			if(typeof current_url.url_path[2] !== "undefined") {
+				clickData.chapter2 = 'categories';
+				clickData.chapter3 = current_url.url_path[2];
+			}
+		} else if(current_url.tag) {
+			if(typeof current_url.url_path[2] !== "undefined") {
+				clickData.chapter2 = 'tags';
+				clickData.chapter3 = current_url.url_path[2];
+			}
+		} else if(current_url.video) {
+			if(typeof current_url.url_path[3] !== "undefined") {
+				clickData.chapter2 = current_url.url_path[2];
+				clickData.chapter3 = current_url.url_path[3];
+			}
+		} else if(current_url.about_us) {
+			clickData.chapter2 = 'about_us';
+			clickData.chapter3 = getLastSegmentFromURL(window.location.href);
+		} else {
+			clickData.chapter3 = getLastSegmentFromURL(window.location.href);
+		}
+
+		tag = initATInternetTag.getInstance();
+		tag.clickListener.send(clickData);
+		
+		debugData({action : '[Click] on Share link (footer)', clickData : clickData});
+	});
+	
+	/**
+	 * CLICKS
+	 * 
+	 * Para todos los clicks se comprueba si el target es _blank para etiquetarlo
+	 * como link de salida en la herramienta de Analítica web.
+	 */
+	$(document).on("click", 'a', function(e) {
+		var link_target = $(this).attr('target');
+		if(link_target !== "undefined" && link_target == "_blank") {
+			var clickData = {
+		        elem: $(this).get(0),
+		        name: $(this).attr('href'),
+		        chapter1: 'exit_link',
+		        level2: level2,
+		        type: 'action'
+		    };
+		
+			tag = initATInternetTag.getInstance();
+			tag.clickListener.send(clickData);
+			
+			debugData({action : '[Click] on Exit Link', clickData : clickData});
+		}
+	});
+	
+	/**
+	 * CLICKS
+	 * 
+	 * Cuando alguien selecciona el botón de enviar para suscribirse a la newsletter
+	 * también debemos enviar una notificacion de click a AT-Internet.
+	 */
+	$(document).on("click", 'form.subscription-form > input[type=button]', function(e) {
+		var clickData = {
+	        elem: $(this).get(0),
+	        name: 'newsletter_subscription',
+	        level2: level2,
+	        type: 'action'
+	    };
+	
+		tag = initATInternetTag.getInstance();
+		tag.clickListener.send(clickData);
+		
+		debugData({action : '[Click] on Newsletter Subscription', clickData : clickData});
 	});
 	
 	/** 
