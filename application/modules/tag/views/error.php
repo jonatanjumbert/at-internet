@@ -11,7 +11,7 @@
 	<body>
 		<h1>Tag page: <span id="pagename"></span></h1>
 		
-		<div class="ui-messages-error">
+		<div class="ui-messages-error-summary">
 			<div style="float:left; width: 49%;">
 				<?php $this->load->view('urls'); ?>
 			</div>
