@@ -19,3 +19,4 @@ Codeigniter website to test the correct way to implement a JS file to tag all pa
   * [Player events](http://player.kaltura.com/docs/api#sendNotification)
   * [Player bind events example](http://player.kaltura.com/docs/index.php?path=kbind)
   * [Dynamic player embed](http://player.kaltura.com/docs/kwidget)
+  * [Reading Player Properties and Expressions](https://vpaas.kaltura.com/documentation/Web-Video-Player/Kaltura-Media-Player-API.html#reading-player-properties-and-expressions)
