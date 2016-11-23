@@ -13,3 +13,9 @@ Codeigniter website to test the correct way to implement a JS file to tag all pa
  * https://www.atinternet-solutions.com/
  * [http://developers.atinternet-solutions.com/](http://developers.atinternet-solutions.com/javascript-en/getting-started-javascript-en/tracker-initialisation-javascript-en/)
  * http://help.atinternet-solutions.com/ES/launch_page.htm
+ 
+### Kaltura docs
+ 
+  * [Player events](http://player.kaltura.com/docs/api#sendNotification)
+  * [Player bind events example](http://player.kaltura.com/docs/index.php?path=kbind)
+  * [Dynamic player embed](http://player.kaltura.com/docs/kwidget)
