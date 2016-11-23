@@ -521,12 +521,13 @@ $(function() {
 	 * Cuando se selecciona uno de los videos de la página de resultados de búsqueda, hay 
 	 * que notificar la keyword buscada, la página de resultados y la posición del resultado clicado.
 	 */
-	$(document).on("click", 'div#p_p_id_search_WAR_europarltv_search_ h2.title a', function() {
+	$(document).on("click", 'div#p_p_id_search_WAR_europarltv_search_ h2.title a', function(e) {
 		var pagina_resultados = $(this).parent().parent().parent().prevAll().length;
 		var num_videos_delante = $(this).parent().parent().prevAll().length;
 		var num_videos_pagina = $('div.video-item', $(this).parent().parent().parent()).length;
 		
 		internalSearchData = {
+			elem : $(this).get(0),
 		    keyword: $("#_search_WAR_europarltv_search_\\:formSearch\\:inputTextSearchBy").val(),
 		    resultPageNumber: pagina_resultados + 1,
 		    resultPosition: ((pagina_resultados == 0) ? (num_videos_delante + 1) : ((num_videos_pagina * pagina_resultados) + (num_videos_delante + 1)))
