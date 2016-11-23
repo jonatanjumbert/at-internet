@@ -13,6 +13,7 @@ var tag = null;
 var current_url = null;
 var debugData = null;
 var level2 = null;
+var producer = "";
 
 /**
  * Se define la funcion de Callback del reproductor de Kaltura para poder enviar a
@@ -20,35 +21,67 @@ var level2 = null;
  */
 window.kalturaCallbackATInternet = function(playerId) {
 	var kdp = document.getElementById(playerId);
-	var producer = $('#' + playerId).attr('data-producer');
-	var mediaLabel = ((typeof producer !== "undefined") ? producer + "::" : "") + ((typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] + "::" : "") + ((typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] + "::" : "");
-	
-	var datosMedia = {
-		mediaType: 'video', 
-		playerId: playerId,
-		mediaLevel2: level2, 
-		refreshDuration: '5', 
-		mediaLabel: mediaLabel, 
-		isEmbedded: false, 
-		duration : 'XXX', 
-		broadcastMode: 'clip'
-	};
-	tag.richMedia.add(datosMedia);
-	
-	debugData({action : '[MEDIA] data', datosMedia : datosMedia});
+	var mediaLabel = ((typeof producer !== "undefined" && producer != "") ? producer + "::" : "") + ((typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] + "::" : "") + ((typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] : "");
 
-	/**
-	 * Evento que se lanza cuando el video hace play.
-	 */
-	kdp.kBind("doPlay", function( data, id ){
+	// Evento que se lanza cuando el video se reproduce por primera vez
+	kdp.kBind("firstPlay", function(data, id) {
+		var datosMedia = {
+			mediaType: 'video', 
+			playerId: playerId,
+			mediaLevel2: level2, 
+			refreshDuration: '5', 
+			mediaLabel: mediaLabel, 
+			isEmbedded: false, 
+			duration : parseInt(kdp.evaluate('{mediaProxy.entry.duration}'), 10),
+			broadcastMode: 'clip'
+		};
+		
+		tag.richMedia.add(datosMedia);
+		debugData({action : '[MEDIA] data', datosMedia : datosMedia});
+	});
+	
+	// Evento que se lanza cuando el video hace play.
+	kdp.kBind("doPlay", function(data, id) {
 		var mediaData = { 
 			action: 'play', 
 			playerId: playerId, 
 			mediaLabel: mediaLabel
 		};
 		tag.richMedia.send(mediaData);
-		
 		debugData({action : '[MEDIA] doPlay', datosMedia : mediaData});
+	});
+	
+	// Evento que se lanza cuando el video hace pause.
+	kdp.kBind("doPause", function(data, id) {
+		var mediaData = { 
+			action: 'pause', 
+			playerId: playerId, 
+			mediaLabel: mediaLabel
+		};
+		tag.richMedia.send(mediaData);
+		debugData({action : '[MEDIA] doPause', datosMedia : mediaData});
+	});
+	
+	// Evento que se lanza cuando el video hace stop.
+	kdp.kBind("doStop", function(data, id) {
+		var mediaData = { 
+			action: 'stop', 
+			playerId: playerId, 
+			mediaLabel: mediaLabel
+		};
+		tag.richMedia.send(mediaData);
+		debugData({action : '[MEDIA] doStop', datosMedia : mediaData});
+	});
+	
+	// Evento que se lanza cuando el video hace stop.
+	kdp.kBind("doSeek", function(data, id) {
+		var mediaData = { 
+			action: 'move', 
+			playerId: playerId, 
+			mediaLabel: mediaLabel
+		};
+		tag.richMedia.send(mediaData);
+		debugData({action : '[MEDIA] doSeek', datosMedia : mediaData});
 	});
 };
 
@@ -68,18 +101,17 @@ $(function() {
 	debugData = function(obj) {
 		if(debugEnabled) {
 			if(typeof obj.action !== "undefined" && obj.action != "") {
-				console.log('::::::::[AT-INTERNET]::::[INI] ' + obj.action + '::::');
+				console.log('[INI]:::[AT-INTERNET]::: ' + obj.action + '::::');
 			}
 			
 			for(var property in obj) {
 			    if(obj.hasOwnProperty(property) && property != "action") {
-			    	console.log('::' + property + '::');
 			    	console.log(obj[property]);
 			    }
 			}
 			
 			if(typeof obj.action !== "undefined" && obj.action != "") {
-				console.log('::::::::[AT-INTERNET]::::[END] ' + obj.action + '::::');
+				console.log('[FIN]:::[AT-INTERNET]::: ' + obj.action + '::::');
 			}
 		}
 	};
@@ -533,11 +565,11 @@ $(function() {
 	 * Evento personalizado que envía de nuevo los datos del buscador cuando se produce una petición AJAX.
 	 */ 
 	$(document).on("change", "#_search_WAR_europarltv_search_\\:formSearch\\:inputTextSearchBy," +
-		"_search_WAR_europarltv_search_\\:formSearch\\:calendarFrom_input, " +
-		"_search_WAR_europarltv_search_\\:formSearch\\:calendarTo_input, " +
-		"_search_WAR_europarltv_search_\\:formSearch\\:types_focus," +
-		"_search_WAR_europarltv_search_\\:formSearch\\:category_focus," +
-		"_search_WAR_europarltv_search_\\:formSearch\\:meps_hinput", function() {
+		"#_search_WAR_europarltv_search_\\:formSearch\\:calendarFrom_input, " +
+		"#_search_WAR_europarltv_search_\\:formSearch\\:calendarTo_input, " +
+		"#_search_WAR_europarltv_search_\\:formSearch\\:types_focus," +
+		"#_search_WAR_europarltv_search_\\:formSearch\\:category_focus," +
+		"#_search_WAR_europarltv_search_\\:formSearch\\:meps_hinput", function() {
 		
 		var pageData = {name: 'search_results', level2: level2};
 		var customVars = {
@@ -736,6 +768,13 @@ $(function() {
 		debugData({action : '[Click] on Newsletter Subscription', clickData : clickData});
 	});
 	
+	if($('span.video-with-producer').length > 0) {
+		var productor = $('span.video-with-producer').attr('data-producer');
+		if(productor !== "undefined") {
+			producer = productor;
+		}
+	}
+	
 	/** 
 	 * JUST FOR DEBBUGING
 	 * Muestra los datos de la página actual y a las variables de página y chapter anterior
@@ -758,7 +797,7 @@ $(function() {
 				$('pre#var_dump').html(html);
 			}
 			if($('span#pagename').length > 0) {
-				$('span#pagename').html(current_url.url_path.pop());
+				$('span#pagename').html(current_url.url_path.slice(current_url.url_path.length - 1, current_url.url_path.length));
 			}
 		}
 	})();
