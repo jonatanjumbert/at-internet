@@ -1,6 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+define('KALTURA_PARTNER_ID', '106');
+define('KALTURA_PLAYER_ID', '23448356');
+
 /*
 |--------------------------------------------------------------------------
 | Display Debug backtrace

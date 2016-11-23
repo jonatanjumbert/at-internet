@@ -4,12 +4,57 @@
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com 
  */
+
+/*
+ * Variables globales de la configuración AT-Internet
+ * y de los datos de la propia página para poder utilizar desde el callback del player.
+ */ 
+var tag = null;
+var current_url = null;
+var debugData = null;
+var level2 = null;
+
+/**
+ * Se define la funcion de Callback del reproductor de Kaltura para poder enviar a
+ * AT-Internet los datos de consumo de cada uno de los videos.
+ */
+window.kalturaCallbackATInternet = function(playerId) {
+	var kdp = document.getElementById(playerId);
+	var producer = $('#' + playerId).attr('data-producer');
+	var mediaLabel = ((typeof producer !== "undefined") ? producer + "::" : "") + ((typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] + "::" : "") + ((typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] + "::" : "");
+	
+	var datosMedia = {
+		mediaType: 'video', 
+		playerId: playerId,
+		mediaLevel2: level2, 
+		refreshDuration: '5', 
+		mediaLabel: mediaLabel, 
+		isEmbedded: false, 
+		duration : 'XXX', 
+		broadcastMode: 'clip'
+	};
+	tag.richMedia.add(datosMedia);
+	
+	debugData({action : '[MEDIA] data', datosMedia : datosMedia});
+
+	/**
+	 * Evento que se lanza cuando el video hace play.
+	 */
+	kdp.kBind("doPlay", function( data, id ){
+		var mediaData = { 
+			action: 'play', 
+			playerId: playerId, 
+			mediaLabel: mediaLabel
+		};
+		tag.richMedia.send(mediaData);
+		
+		debugData({action : '[MEDIA] doPlay', datosMedia : mediaData});
+	});
+};
+
 $(function() {
-	var current_url = null;
 	var url_segments = null;
-	var tag = null;
 	var siteID = null;
-	var level2 = null;
 	var lang = "es";
 	var debugEnabled = true;
 	
@@ -20,7 +65,7 @@ $(function() {
 	 * Funcion para debugar variables por consola.
 	 * Siempre que la variable debugEnabled sea true.
 	 */
-	var debugData = function(obj) {
+	debugData = function(obj) {
 		if(debugEnabled) {
 			if(typeof obj.action !== "undefined" && obj.action != "") {
 				console.log('::::::::[AT-INTERNET]::::[INI] ' + obj.action + '::::');
