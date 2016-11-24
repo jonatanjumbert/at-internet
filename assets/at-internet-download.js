@@ -186,18 +186,31 @@ $(function() {
 				if(typeof(Storage) !== "undefined") {
 					// Guardar datos que corresponda a cada página.
 					if(current_url.home) {
+<<<<<<< HEAD
 						localStorage.previous_chapter_download = "download";
 						localStorage.previous_page_download = "hompage";
 					} else if(current_url.login) {
 						localStorage.previous_chapter_download = "download";
 						localStorage.previous_page_download = "login";
+=======
+						localStorage.previous_chapter = "download";
+						localStorage.previous_page = "hompage";
+					} else if(current_url.login) {
+						localStorage.previous_chapter = "download";
+						localStorage.previous_page = "login";
+>>>>>>> branch 'master' of https://github.com/jonatanjumbert/at-internet.git
 					} else if(current_url.video) {
 						if($('div.col-download ul.nav.nav-tabs li.active').length > 0) {
 							var text = $('a', $('div.col-download ul.nav.nav-tabs li.active')).html();
 							var active_tab = (text !== "undefined" && text != "") ? text.toLowerCase() : "download";
 
+<<<<<<< HEAD
 							localStorage.previous_chapter_download = "download";
 							localStorage.previous_page_download = active_tab;
+=======
+							localStorage.previous_chapter = "download";
+							localStorage.previous_page = active_tab;
+>>>>>>> branch 'master' of https://github.com/jonatanjumbert/at-internet.git
 						}
 					}
 					localStorage.current_time_download = Math.floor(Date.now() / 1000);
@@ -256,6 +269,8 @@ $(function() {
 	};
 	
 	/**
+	 * XXX FIXME TODO Revisar si en el site de download, los IDS corresponden exactamente igual que en el site normal.
+	 * 
 	 * Si estamos en la página de búsqueda, según el plan de marcaje se han definido variables 
 	 * personalizadas que hay que enviar a la herramienta de analítica.
 	 */
@@ -319,6 +334,7 @@ $(function() {
 	};
 	
 	/**
+<<<<<<< HEAD
 	 * Si el usuario selecciona descargar un video o únicamente los subitulos, según el plan de marcaje se han definido variables 
 	 * personalizadas que hay que enviar a la herramienta de analítica.
 	 */
@@ -420,6 +436,8 @@ $(function() {
 	};
 	
 	/**
+=======
+>>>>>>> branch 'master' of https://github.com/jonatanjumbert/at-internet.git
 	 * Dependiendo de la página que se esté visualizando se envian unos datos u otros 
 	 * a la herramienta de Analítica Web de AT-Internet.
 	 */
@@ -613,6 +631,7 @@ $(function() {
 	});
 	
 	/**
+<<<<<<< HEAD
 	 * Al cambiar de Tab en la página de producto enviamos eventos de página vista segun el 
 	 * plan de marcado. 
 	 */
@@ -649,6 +668,93 @@ $(function() {
 						debugData({action : 'Tagging Product page', pageData : pageData, customVars : customVars, tagsData : tagsData});
 					}
 				}
+=======
+	 * BUSCADOR
+	 * 
+	 * Al clicar al botón para mostrar la siguiente página de resultados,
+	 * indicamos a la herramienta de Analítica web, la keyword y la página de resultados mostrada.
+	 */ 
+	$(document).on("click", 'div#p_p_id_search_WAR_europarltv_search_ div.load-more a', function() {
+		var pageData = {name: 'search_results', level2: level2};
+		
+		tag = initATInternetTag.getInstance();
+		tag.page.set(pageData); 
+		tag.dispatch();
+		
+		debugData({action : '[Search] Click on Load More results button', pageData : pageData});
+	});
+	
+	/**
+	 * CLICKS
+	 * 
+	 * Cuando se clica un TAG, hay que enviar un evento de click a AT-INTERNET.
+	 * Ya sea en la página de tags o en la de producto.
+	 */
+	$(document).on("click", 'ul.tags-list a', function(e) {
+		var current_url = initURLObject.getInstance();
+		var clickData = {
+	        elem: $(this).get(0),
+	        name: getLastSegmentFromURL(window.location.href),
+	        chapter1: 'tags',
+	        chapter2: getLastSegmentFromURL($(this).attr('href')),
+	        chapter3: (current_url.tag) ? 'tags_page' : 'product_page',
+	        level2: level2,
+	        type: 'action'
+	    };
+		
+		tag = initATInternetTag.getInstance();
+		tag.clickListener.send(clickData);
+		
+		debugData({action : '[Click] on Tag', clickData : clickData});
+	});
+	
+	/**
+	 * CLICKS
+	 * 
+	 * Cuando se clica un TAG, hay que enviar un evento de click a AT-INTERNET.
+	 * Ya sea en la página de tags o en la de producto.
+	 */
+	$(document).on("click", 'ul.socialmedia-buttons a', function(e) {
+		var current_url = initURLObject.getInstance();
+		var clickData = {
+	        elem: $(this).get(0),
+	        name: $('span.ep_name', $(this)).html(),
+	        chapter1: 'share_video',
+	        chapter2 : (typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] : '', 
+	        level2: level2,
+	        type: 'action'
+	    };
+		
+		tag = initATInternetTag.getInstance();
+		tag.clickListener.send(clickData);
+		
+		debugData({action : '[Click] on Share link (video)', clickData : clickData});
+	});
+	
+	/**
+	 * CLICKS
+	 * 
+	 * Cuando se clica un enlace de compartir en las redes sociales del pie de página
+	 * hay que enviar un evento de click a AT-INTERNET.
+	 */
+	$(document).on("click", 'div#socialmedia div.ep_list ul li.ep_item a', function(e) {
+		var current_url = initURLObject.getInstance();
+		var clickData = {
+	        elem: $(this).get(0),
+	        name: $('span.ep_name', $(this)).html(),
+	        chapter1: 'share_page',
+	        level2: level2,
+	        type: 'action'
+	    };
+		
+		if(current_url.home) {
+			clickData.chapter2 = 'homepage';
+			clickData.chapter3 = 'homepage';
+		} else if(current_url.category) {
+			if(typeof current_url.url_path[2] !== "undefined") {
+				clickData.chapter2 = 'categories';
+				clickData.chapter3 = current_url.url_path[2];
+>>>>>>> branch 'master' of https://github.com/jonatanjumbert/at-internet.git
 			}
 		}
 	});
