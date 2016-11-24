@@ -14,7 +14,7 @@ class MY_Controller extends MX_Controller {
 	 * Download : 2
 	 * External : 3
 	 */
-	public $level2ID = "1";
+	public $level2ID = "2";
 	
 	public $language = 'en-US';
 	
