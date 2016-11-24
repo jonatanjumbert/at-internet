@@ -3,7 +3,7 @@ Codeigniter website to test the correct way to implement a JS file to tag all pa
 
 ### JS Script
  * [Script for tagging Website](assets/at-internet.js)
- * Script for tagging Download Site
+ * [Script for tagging Download Site](assets/at-internet-download.js)
  * Script for tagging Embeds
 
 ### Documentation & Links
