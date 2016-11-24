@@ -15,81 +15,24 @@ var debugData = null;
 var level2 = null;
 var producer = "";
 
-/**
- * Se define la funcion de Callback del reproductor de Kaltura para poder enviar a
- * AT-Internet los datos de consumo de cada uno de los videos.
- */
-window.kalturaCallbackATInternet = function(playerId) {
-	var kdp = document.getElementById(playerId);
-	var mediaLabel = ((typeof producer !== "undefined" && producer != "") ? producer + "::" : "") + ((typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] + "::" : "") + ((typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] : "");
-
-	// Evento que se lanza cuando el video se reproduce por primera vez
-	kdp.kBind("firstPlay", function(data, id) {
-		var datosMedia = {
-			mediaType: 'video', 
-			playerId: playerId,
-			mediaLevel2: level2, 
-			refreshDuration: '5', 
-			mediaLabel: mediaLabel, 
-			isEmbedded: false, 
-			duration : parseInt(kdp.evaluate('{mediaProxy.entry.duration}'), 10),
-			broadcastMode: 'clip'
-		};
-		
-		tag.richMedia.add(datosMedia);
-		debugData({action : '[MEDIA] data', datosMedia : datosMedia});
-	});
-	
-	// Evento que se lanza cuando el video hace play.
-	kdp.kBind("doPlay", function(data, id) {
-		var mediaData = { 
-			action: 'play', 
-			playerId: playerId, 
-			mediaLabel: mediaLabel
-		};
-		tag.richMedia.send(mediaData);
-		debugData({action : '[MEDIA] doPlay', datosMedia : mediaData});
-	});
-	
-	// Evento que se lanza cuando el video hace pause.
-	kdp.kBind("doPause", function(data, id) {
-		var mediaData = { 
-			action: 'pause', 
-			playerId: playerId, 
-			mediaLabel: mediaLabel
-		};
-		tag.richMedia.send(mediaData);
-		debugData({action : '[MEDIA] doPause', datosMedia : mediaData});
-	});
-	
-	// Evento que se lanza cuando el video hace stop.
-	kdp.kBind("doStop", function(data, id) {
-		var mediaData = { 
-			action: 'stop', 
-			playerId: playerId, 
-			mediaLabel: mediaLabel
-		};
-		tag.richMedia.send(mediaData);
-		debugData({action : '[MEDIA] doStop', datosMedia : mediaData});
-	});
-	
-	// Evento que se lanza cuando el video hace stop.
-	kdp.kBind("doSeek", function(data, id) {
-		var mediaData = { 
-			action: 'move', 
-			playerId: playerId, 
-			mediaLabel: mediaLabel
-		};
-		tag.richMedia.send(mediaData);
-		debugData({action : '[MEDIA] doSeek', datosMedia : mediaData});
-	});
-};
-
 $(function() {
 	var url_segments = null;
 	var siteID = null;
 	var lang = "es";
 	var debugEnabled = true;
+	
+	/**
+	 * Si estamos en modoDebug simulamos la variable de Liferay que nos da el ID del usuario actual.
+	 */
+	if(debugEnabled) {
+		var Liferay = {
+			ThemeDisplay : {
+				getUserId : function() {
+					return "4871";
+				}	
+			}	
+		};
+	}
 	
 	// Comprobamos si existe console, para debugar
 	if(!window.console) console = { log: function(){} };
@@ -184,13 +127,12 @@ $(function() {
 	})();
 	
 	/**
-	 * Comprueba si la página actual es la home page.
-	 * Dado que puede serlo si incluye como segmento de la URL "Home" o si unicamente tiene un segmento con el Idioma actual.
+	 * Comprueba si la página actual es la home login.
 	 */ 
-	var checkHomePage = function() {
-		if(url_segments.indexOf("home") === -1 ) {
-			if(url_segments.length == 1) {
-				return true;
+	var checkLoginPage = function() {
+		if(window.location.href.indexOf("login") === -1 ) {
+			if(url_segments.length == 1 && url_segments[0].length == 2) {
+				return true
 			} else {
 				return false;
 			}
@@ -200,33 +142,15 @@ $(function() {
 	};
 	
 	/**
-	 * Comprueba si la URL actual contiene alguno de los slugs que etiquetaremos en la herramienta de Analítica de AT-Internet
-	 * como páginas "about_us" (chapter1).
+	 * Comprueba si la página actual es la de descarga de un programa.
 	 */
-	var checkAboutUsPage = function() {
-		var about_us_slugs = ['about-us', 'partners', 'editorial-chart', 'contact-us'];
-		for(var i = 0; i < about_us_slugs.length; i++) {
-			if(url_segments.indexOf(about_us_slugs[i]) > -1) {
-				return true;
-			}
-		}
-		return false;
-	};
-	
-	/**
-	 * Comprueba si la página actual ha dado un código 404, para ello buscamos $('div#website.page-not-found')
-	 * Aunque también puede tratarse de 
-	 * 	- Tag / Category / Video que no existe: $('.ui-messages-error-summary')
-	 */
-	var checkErrorPage = function() {
-		if($('div#website.page-not-found').length > 0) {
-			return true;
-		} else if($('.ui-messages-error-summary').length > 0) {
-			return true;
-		} else {
+	var checkVideoPage = function() {
+		if(window.location.href.indexOf("programmeId") === -1 ) {
 			return false;
+		} else {
+			return true;
 		}
-	};
+	}
 	
 	/**
 	 * Objeto que contiene los datos de los segmentos de la URL actual, idioma y determina que tipo de página estamos visitando.
@@ -235,20 +159,17 @@ $(function() {
 		var instance;
 		
 		function createInstance() {
-			var is_error_page = checkErrorPage();
+			var is_login_page = checkLoginPage();
+			var is_video_page = checkVideoPage();
 			
 			return {
 				'url_path' : url_segments,
 				'previous_page' : (typeof(Storage) !== "undefined" && localStorage.previous_page != "") ? localStorage.previous_page : "",
 				'previous_chapter' : (typeof(Storage) !== "undefined" && localStorage.previous_chapter != "") ? localStorage.previous_chapter : "",
 				'lang' : lang,
-				'home' : checkHomePage(),
-				'category' : (!is_error_page && url_segments.indexOf("category") > -1 ) ? true : false,
-				'tag' : (!is_error_page && url_segments.indexOf("tag") > -1 ) ? true : false,
-				'search' : (url_segments.indexOf("search") === -1 ) ? false : true,
-				'error' : is_error_page,
-				'video' : (!is_error_page && url_segments.indexOf("programme") > -1 ) ? true : false,
-				'about_us' : checkAboutUsPage()
+				'login' : is_login_page,
+				'home' : (!is_login_page && !is_video_page && $('.search-video-form').length > 0) ? true : false,
+				'video' : is_video_page,
 			};
 		}
 		
@@ -265,26 +186,19 @@ $(function() {
 				if(typeof(Storage) !== "undefined") {
 					// Guardar datos que corresponda a cada página.
 					if(current_url.home) {
-						localStorage.previous_chapter = "hompage";
+						localStorage.previous_chapter = "download";
 						localStorage.previous_page = "hompage";
-					} else if(current_url.category) {
-						localStorage.previous_chapter = "categories";
-						localStorage.previous_page = (typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] : "";
-					} else if(current_url.tag) {
-						localStorage.previous_chapter = "tags";
-						localStorage.previous_page = (typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] : "";
-					} else if(current_url.search) {
-						localStorage.previous_chapter = "";
-						localStorage.previous_page = "search_results";
-					} else if(current_url.error) {
-						localStorage.previous_chapter = "";
-						localStorage.previous_page = "error_page";
+					} else if(current_url.login) {
+						localStorage.previous_chapter = "download";
+						localStorage.previous_page = "login";
 					} else if(current_url.video) {
-						localStorage.previous_chapter = "product_page";
-						localStorage.previous_page = (typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] : "";
-					} else if(current_url.about_us) {
-						localStorage.previous_chapter = "about_us";
-						localStorage.previous_page = (typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] : "";
+						if($('div.col-download ul.nav.nav-tabs li.active').length > 0) {
+							var text = $('a', $('div.col-download ul.nav.nav-tabs li.active')).html();
+							var active_tab = (text !== "undefined" && text != "") ? text.toLowerCase() : "download";
+
+							localStorage.previous_chapter = "download";
+							localStorage.previous_page = active_tab;
+						}
 					}
 					localStorage.current_time = Math.floor(Date.now() / 1000);
 				}
@@ -301,7 +215,7 @@ $(function() {
 		
 		function createInstance() {
 			siteID = (typeof site_id !== "undefined") ? site_id : 573738;
-			level2 = (typeof level2Id !== "undefined") ? level2Id : 1;
+			level2 = (typeof level2Id !== "undefined") ? level2Id : 2;
 			return new ATInternet.Tracker.Tag({log: "logc407", logSSL: "logs1407", secure: false, site: siteID, domain: "xiti.com"});
 		}
 		
@@ -342,6 +256,8 @@ $(function() {
 	};
 	
 	/**
+	 * XXX FIXME TODO Revisar si en el site de download, los IDS corresponden exactamente igual que en el site normal.
+	 * 
 	 * Si estamos en la página de búsqueda, según el plan de marcaje se han definido variables 
 	 * personalizadas que hay que enviar a la herramienta de analítica.
 	 */
@@ -405,18 +321,6 @@ $(function() {
 	};
 	
 	/**
-	 * Si estamos en la página de error, según el plan de marcaje se han definido variables 
-	 * personalizadas que hay que enviar a la herramienta de analítica.
-	 */
-	var getVariablesPaginaError = function() {
-		return result = {
-			1 : '404',
-			2 : (typeof(Storage) !== "undefined" && localStorage.previous_page != "") ? '[' + localStorage.previous_page + ']' : '',
-			3 : '[' + window.location.href + ']'
-		};
-	};
-	
-	/**
 	 * Dependiendo de la página que se esté visualizando se envian unos datos u otros 
 	 * a la herramienta de Analítica Web de AT-Internet.
 	 */
@@ -429,90 +333,37 @@ $(function() {
 		var pageData = {};
 		var customVars = {};
 		var tagsData = {};
-		var internalSearch = {};
 		
 		if(current_url.home) {
-			pageData = {name: 'homepage', chapter1: 'hompage', level2: level2}
+			pageData = {name: 'homepage', chapter1: 'download', level2: level2}
 			customVars = {site: getVariablesSitioPersonalizadas()};
 			
 			tag.page.set(pageData);
 			tag.customVars.set(customVars);
+			tag.identifiedVisitor.set({id: Liferay.ThemeDisplay.getUserId()});
 			tag.dispatch();
 			
 			debugData({action : 'Tagging Homepage', pageData : pageData, customVars : customVars});
-		} else if(current_url.category) {
-			if(typeof current_url.url_path[2] !== "undefined") {
-				pageData = {name: current_url.url_path[2], chapter1: 'categories', level2: level2};
-				customVars = {site: getVariablesSitioPersonalizadas()};
-				
-				tag.page.set(pageData);
-				tag.customVars.set(customVars);
-				tag.dispatch();
-				
-				debugData({action : 'Tagging Category page', pageData : pageData, customVars : customVars});
-			}
-		} else if(current_url.tag) {
-			if(typeof current_url.url_path[2] !== "undefined") {
-				pageData = {name: current_url.url_path[2], chapter1: 'tags', level2: level2};
-				customVars = {site: getVariablesSitioPersonalizadas()};
-				
-				tag.page.set(pageData);
-				tag.customVars.set(customVars);
-				
-				// Segun el plan de marcaje hay que enviar los tags relacionados de las página de tag.
-				if($('#tags-list').length > 0) {
-					var lista_de_tags = $('#tags-list').attr('data-tags');
-					if(lista_de_tags !== "undefined") {
-						var lista_de_tags_split = lista_de_tags.split('|');
-						if(lista_de_tags_split.length > 0) {
-							tagsData = {keywords: lista_de_tags_split};
-							tag.tags.set(tagsData);
-						}
-					}
-				}
-				tag.dispatch();
-				
-				debugData({action : 'Tagging Tag page', pageData : pageData, customVars : customVars, tags : tagsData});
-			}
-		} else if(current_url.search) {
-			pageData = {name: 'search_results', level2: level2};
-			customVars = {
-				site : getVariablesSitioPersonalizadas(),
-				page : getVariablesPaginaBusqueda()
-			};
+		} else if(current_url.login) {
+			pageData = {name: 'login', chapter1: 'download', level2: level2};
+			customVars = {site: getVariablesSitioPersonalizadas()};
 			
 			tag.page.set(pageData);
 			tag.customVars.set(customVars);
-			
-			if($("#_search_WAR_europarltv_search_\\:formSearch\\:inputTextSearchBy").length > 0) {
-				internalSearch = {
-					keyword: $("#_search_WAR_europarltv_search_\\:formSearch\\:inputTextSearchBy").val(), 
-					resultPageNumber: '1'
-				};
-				tag.internalSearch.set(internalSearch);
-			}
+			tag.identifiedVisitor.set({id: Liferay.ThemeDisplay.getUserId()});
 			tag.dispatch();
 			
-			debugData({action : 'Tagging Search page', pageData : pageData, customVars : customVars, internalSearch : internalSearch});
-		} else if(current_url.error) {
-			pageData = {name: 'error_page', level2: level2};
-			customVars = {
-				site : getVariablesSitioPersonalizadas(),
-				page : getVariablesPaginaError()
-			};
-			
-			tag.page.set(pageData);
-			tag.customVars.set(customVars);
-			tag.dispatch();
-			
-			debugData({action : 'Tagging Error page', pageData : pageData, customVars : customVars});
+			debugData({action : 'Tagging Login page', pageData : pageData, customVars : customVars});
 		} else if(current_url.video) {
-			if(typeof current_url.url_path[3] !== "undefined") {
-				pageData = {name: current_url.url_path[3], chapter1: 'product_page', chapter2 : current_url.url_path[2], level2: level2};
+			var programTitle = ($('h1.regular-text').length > 0) ? $('h1.regular-text').attr('data-slug') : "";
+			
+			if(programTitle !== "undefined" && programTitle != "") {
+				pageData = {name: 'download', chapter1: 'download', chapter2 : 'programme_details', chapter3 : programTitle, level2: level2};
 				customVars = {site: getVariablesSitioPersonalizadas()};
 				
 				tag.page.set(pageData);
 				tag.customVars.set(customVars);
+				tag.identifiedVisitor.set({id: Liferay.ThemeDisplay.getUserId()});
 				
 				// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 				if($('#tags-list').length > 0) {
@@ -529,15 +380,6 @@ $(function() {
 				
 				debugData({action : 'Tagging Product page', pageData : pageData, customVars : customVars, tagsData : tagsData});
 			}
-		} else if(current_url.about_us) {
-			pageData = {name: current_url.url_path[1], level2: level2};
-			customVars = {site: getVariablesSitioPersonalizadas()};
-			
-			tag.page.set(pageData);
-			tag.customVars.set();
-			tag.dispatch();
-			
-			debugData({action : 'Tagging About us page', pageData : pageData, customVars : customVars});
 		}
 	})();
 	
@@ -593,41 +435,12 @@ $(function() {
 	 */ 
 	$(document).on("click", 'div#p_p_id_search_WAR_europarltv_search_ div.load-more a', function() {
 		var pageData = {name: 'search_results', level2: level2};
-		var internalSearchData = {
-			keyword: $("#_search_WAR_europarltv_search_\\:formSearch\\:inputTextSearchBy").val(), 
-			resultPageNumber: $('div#_search_WAR_europarltv_search_\\:formSearch\\:initialResultsPanel div.videos-list').length + 1
-		};
 		
 		tag = initATInternetTag.getInstance();
 		tag.page.set(pageData); 
-		tag.internalSearch.set(internalSearchData); 
 		tag.dispatch();
 		
-		debugData({action : '[Search] Click on Load More results button', pageData : pageData, internalSearData : internalSearData});
-	});
-	
-	/**
-	 * BUSCADOR
-	 * 
-	 * Cuando se selecciona uno de los videos de la página de resultados de búsqueda, hay 
-	 * que notificar la keyword buscada, la página de resultados y la posición del resultado clicado.
-	 */
-	$(document).on("click", 'div#p_p_id_search_WAR_europarltv_search_ h2.title a', function(e) {
-		var pagina_resultados = $(this).parent().parent().parent().prevAll().length;
-		var num_videos_delante = $(this).parent().parent().prevAll().length;
-		var num_videos_pagina = $('div.video-item', $(this).parent().parent().parent()).length;
-		
-		internalSearchData = {
-			elem : $(this).get(0),
-		    keyword: $("#_search_WAR_europarltv_search_\\:formSearch\\:inputTextSearchBy").val(),
-		    resultPageNumber: pagina_resultados + 1,
-		    resultPosition: ((pagina_resultados == 0) ? (num_videos_delante + 1) : ((num_videos_pagina * pagina_resultados) + (num_videos_delante + 1)))
-		};
-		
-		tag = initATInternetTag.getInstance();
-		tag.internalSearch.send(internalSearchData);
-		
-		debugData({action : '[Search] Click on Search Result', internalSearchData : internalSearchData});
+		debugData({action : '[Search] Click on Load More results button', pageData : pageData});
 	});
 	
 	/**

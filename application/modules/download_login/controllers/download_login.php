@@ -3,7 +3,6 @@
 class download_login extends MY_Controller {
 
 	public function __construct() {
-		die('a');
 		parent::__construct();
 	}
 	
