@@ -85,6 +85,22 @@ $(function() {
 	};
 	
 	/**
+	 *  Recupera el idioma de la página actual.
+	 *  @FIXME Importante que Balidea incluya en el código fuente de todas las páginas 
+	 */
+	var getLanguage = (function() {
+		lang = $('html').attr('lang');
+		if(typeof lang !== "undefined" && lang != "")  {
+			lang_split = lang.split("-");
+			if(lang_split.length > 1) {
+				lang = lang_split[0].toUpperCase();
+			}
+		} else {
+			lang = "EN";
+		}
+	})();
+	
+	/**
 	 * Guarda en url_segments un array con los segmentos de la URL actual.
 	 * Incluye como primer segmento el Idioma aunque se trate del Inglés y por defecto no aparezca en la URL.
 	 */
@@ -126,22 +142,6 @@ $(function() {
 	    if(!results[2]) return '';
 	    return decodeURIComponent(results[2].replace(/\+/g, " "));
 	};
-	
-	/**
-	 *  Recupera el idioma de la página actual.
-	 *  @FIXME Importante que Balidea incluya en el código fuente de todas las páginas 
-	 */
-	var getLanguage = (function() {
-		lang = $('html').attr('lang');
-		if(typeof lang !== "undefined" && lang != "")  {
-			lang_split = lang.split("-");
-			if(lang_split.length > 1) {
-				lang = lang_split[0].toUpperCase();
-			}
-		} else {
-			lang = "EN";
-		}
-	})();
 	
 	/**
 	 * Comprueba si la página actual es la home login.
@@ -443,7 +443,6 @@ $(function() {
 	var tagThisPage = (function() {
 		// Iniciamos el objeto y el envío de datos al proveedor de Analítica web.
 		current_url = initURLObject.getInstance();
-		initURLObject.setCurrentPageData();
 		tag = initATInternetTag.getInstance();
 		
 		var pageData = {};
@@ -494,9 +493,15 @@ $(function() {
 				}
 				tag.dispatch();
 				
-				debugData({action : 'Tagging Product page', pageData : pageData, customVars : customVars, tagsData : tagsData});
+				var data = {action : 'Tagging Product page', pageData : pageData, customVars : customVars};
+				if(!$.isEmptyObject(tagsData)) {
+					data.tags = tagsData;
+				}
+				debugData(data);
 			}
 		}
+		
+		initURLObject.setCurrentPageData();
 	})();
 	
 	/**
