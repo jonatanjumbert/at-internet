@@ -348,7 +348,7 @@ $(function() {
 		var result = {};
 		
 		if($('form#_search_WAR_europarltv_search_\\:formSearch').length > 0) {
-			$('form#_search_WAR_europarltv_search_\\:formSearch').children('input').each(function () {
+			$('input', $('form#_search_WAR_europarltv_search_\\:formSearch')).each(function () {
 				if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:inputTextSearchBy") {
 					result[1] = "[" + this.value + "]";
 				} else if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:calendarFrom_input") {
@@ -366,9 +366,13 @@ $(function() {
 						result[3] = "[" + send_value + "]";
 					}
 				} else if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:types_focus") {
-					result[4] = "[" + this.value + "]";
+					if(this.value != "") {
+						result[4] = "[" + this.value + "]";
+					}
 				} else if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:category_focus") {
-					result[5] = "[" + this.value + "]";
+					if(this.value != "") {
+						result[5] = "[" + this.value + "]";
+					}
 				} else if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:meps_hinput") {
 					var current_value = this.value;
 					var send_value = "[";
@@ -458,14 +462,27 @@ $(function() {
 				tag.customVars.set(customVars);
 				
 				// Segun el plan de marcaje hay que enviar los tags relacionados de las página de tag.
-				if($('#tags-list').length > 0) {
-					var lista_de_tags = $('#tags-list').attr('data-tags');
-					if(lista_de_tags !== "undefined") {
-						var lista_de_tags_split = lista_de_tags.split('|');
-						if(lista_de_tags_split.length > 0) {
-							tagsData = {keywords: lista_de_tags_split};
-							tag.tags.set(tagsData);
+				if($('.tags-list').length > 0) {
+					$('.tags-list').each(function(id, val) {
+						var lista_de_tags = $(this).attr('data-tags');
+						if(lista_de_tags !== "undefined") {
+							var lista_de_tags_split = lista_de_tags.split('|');
+							if(lista_de_tags_split.length > 0) {
+								if(typeof tagsData.keywords === "undefined") {
+									tagsData = {keywords: lista_de_tags_split};
+								} else {
+									for(var i = 0; i < lista_de_tags_split.length; i++) {
+										if(tagsData.keywords.indexOf(lista_de_tags_split[i]) === -1 ) {
+											tagsData.keywords.push(lista_de_tags_split[i]);
+										}
+									}
+								}
+							}
 						}
+					});
+					
+					if(typeof tagsData.keywords === "undefined") {
+						tag.tags.set(tagsData);
 					}
 				}
 				tag.dispatch();
@@ -536,7 +553,7 @@ $(function() {
 				debugData(data);
 			}
 		} else if(current_url.about_us) {
-			pageData = {name: current_url.url_path[1], level2: level2};
+			pageData = {name: current_url.url_path[1], chapter1 : 'about_us', level2: level2};
 			customVars = {site: getVariablesSitioPersonalizadas()};
 			
 			tag.page.set(pageData);
@@ -644,7 +661,7 @@ $(function() {
 	 * Cuando se clica un TAG, hay que enviar un evento de click a AT-INTERNET.
 	 * Ya sea en la página de tags o en la de producto.
 	 */
-	$(document).on("click", 'ul.tags-list a', function(e) {
+	$(document).on("click", '.tags-list a', function(e) {
 		var current_url = initURLObject.getInstance();
 		var clickData = {
 	        elem: $(this).get(0),
@@ -672,7 +689,7 @@ $(function() {
 		var current_url = initURLObject.getInstance();
 		var clickData = {
 	        elem: $(this).get(0),
-	        name: $('span.ep_name', $(this)).html(),
+	        name: $(this).text().trim(),
 	        chapter1: 'share_video',
 	        chapter2 : (typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] : '', 
 	        level2: level2,
@@ -695,7 +712,7 @@ $(function() {
 		var current_url = initURLObject.getInstance();
 		var clickData = {
 	        elem: $(this).get(0),
-	        name: $('span.ep_name', $(this)).html(),
+	        name: $(this).text().trim(),
 	        chapter1: 'share_page',
 	        level2: level2,
 	        type: 'action'
