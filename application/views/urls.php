@@ -30,6 +30,12 @@
 </ul>
 
 <ul>
+	<li>RSS</li>
+	<li><a href="/rss/">http://at-internet.local/rss/</a></li>
+	<li><a href="/de/rss/">http://at-internet.local/de/rss/</a></li>
+</ul>
+
+<ul>
 	<li>Search</li>
 	<li><a href="/search?text=busqueda-1">http://at-internet.local/search?text=busqueda-1</a></li>
 	<li><a href="/search?text=busqueda-2">http://at-internet.local/search?text=busqueda-2</a></li>

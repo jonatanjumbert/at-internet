@@ -247,7 +247,8 @@ $(function() {
 				'search' : (url_segments.indexOf("search") === -1 ) ? false : true,
 				'error' : is_error_page,
 				'video' : (!is_error_page && url_segments.indexOf("programme") > -1 ) ? true : false,
-				'about_us' : checkAboutUsPage()
+				'about_us' : checkAboutUsPage(),
+				'rss' : (!is_error_page && url_segments.indexOf("rss") > -1 ) ? true : false,
 			};
 		}
 		
@@ -544,6 +545,15 @@ $(function() {
 			tag.dispatch();
 			
 			debugData({action : 'Tagging About us page', pageData : pageData, customVars : customVars});
+		} else if(current_url.rss) {
+			pageData = {name: 'RSS feed', level2: level2};
+			customVars = {site: getVariablesSitioPersonalizadas()};
+			
+			tag.page.set(pageData);
+			tag.customVars.set();
+			tag.dispatch();
+			
+			debugData({action : 'Tagging RSS page', pageData : pageData, customVars : customVars});
 		}
 		
 		initURLObject.setCurrentPageData();

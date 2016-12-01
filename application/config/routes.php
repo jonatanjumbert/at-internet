@@ -54,7 +54,6 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 $_ROUTES = array(
-	/*
 	// URLS Site Normal
 	'(es|en|de)' => 'home/index',
 	'\w{2}/home' => 'home/index',
@@ -71,6 +70,9 @@ $_ROUTES = array(
 	
 	'\w{2}/search' => 'search/index',
 		
+	'rss' => 'rss/index',
+	'\w{2}/rss' => 'rss/index',
+		
 	'about-us' => 'about_us/about_us',
 	'\w{2}/about-us' => 'about_us/about_us',
 	'contact-us' => 'about_us/contact_us',
@@ -84,9 +86,9 @@ $_ROUTES = array(
 	'\w{2}/programme/(:any)/producto-error-404' => 'product/error',
 	'programme/(:any)/(:any)' => 'product/index',
 	'\w{2}/programme/(:any)/(:any)' => 'product/index',
-	*/
 	
 	// URL Site Download
+	/*
 	'default_controller' => 'download_login/index',
 	'login' => 'download_login/index',
 	'\w{2}/login' => 'download_login/index',
@@ -94,6 +96,7 @@ $_ROUTES = array(
 	'\w{2}/download' => 'download_homepage/index',
 	'download/detail/programmeId/(:num)' => 'download_programme/index',
 	'\w{2}/download/detail/programmeId/(:num)' => 'download_programme/index'
+	*/
 );
 
 foreach($_ROUTES as $r => $data) {

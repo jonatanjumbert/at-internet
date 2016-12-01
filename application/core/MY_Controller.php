@@ -20,7 +20,6 @@ class MY_Controller extends MX_Controller {
 	
 	public function __construct() {
 		parent::__construct();
-		
 		$first_param = $this->uri->segment(1, 'en');
 		$first_param = (strlen($first_param) > 2) ? 'en' : $first_param;
 		
