@@ -348,60 +348,43 @@ $(function() {
 		var result = {};
 		
 		if($('form#_search_WAR_europarltv_search_\\:formSearch').length > 0) {
-			$('input', $('form#_search_WAR_europarltv_search_\\:formSearch')).each(function () {
-				if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:inputTextSearchBy") {
-					result[1] = "[" + this.value + "]";
-				} else if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:calendarFrom_input") {
-					var current_value = this.value;
-					var current_value_split = current_value.split('/');
-					if(current_value_split.length == 3) {
-						var send_value = parseInt("" + current_value_split[2] + current_value_split[1] + current_value_split[0], 10);
-						result[2] = "[" + send_value + "]";
-					}
-				} else if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:calendarTo_input") {
-					var current_value = this.value;
-					var current_value_split = current_value.split('/');
-					if(current_value_split.length == 3) {
-						var send_value = parseInt("" + current_value_split[2] + current_value_split[1] + current_value_split[0], 10);
-						result[3] = "[" + send_value + "]";
-					}
-				} else if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:types_focus") {
-					if(this.value != "") {
-						result[4] = "[" + this.value + "]";
-					}
-				} else if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:category_focus") {
-					if(this.value != "") {
-						result[5] = "[" + this.value + "]";
-					}
-				} else if($(this).attr('id') == "_search_WAR_europarltv_search_:formSearch:meps_hinput") {
-					var current_value = this.value;
-					var send_value = "[";
-					
-					if($.isArray(current_value)) {
-						$.each(current_value, function(i, val) {
-							send_value += val;
-							if(i + 1 < current_value.length) {
-								send_value += "|";
-							}
-						});
-					} else {
-						var current_value_split = current_value.split(',');
-						if(current_value_split.length > 0) {
-							$.each(current_value_split, function(i, val) {
-								send_value += val;
-								if(i + 1 < current_value_split.length) {
-									send_value += "|";
-								}
-							});
-						}
-					}
-					send_value += "]";
-					
-					if(send_value != "[]") {
-						result[6] = "[" + send_value + "]";
-					}
+			var searchBy = getParameterByName("text");
+			if(searchBy != null && searchBy != "") {
+				result[1] = searchBy;
+			}
+			
+			var dateFrom = getParameterByName("pDateFrom");
+			if(dateFrom != null && dateFrom != "") {
+				var current_value_split = dateFrom.split('/');
+				if(current_value_split.length == 3) {
+					var send_value = parseInt("" + current_value_split[2] + current_value_split[1] + current_value_split[0], 10);
+					result[2] = "[" + send_value + "]";
 				}
-			});
+			}
+			
+			var dateTo = getParameterByName("pDateTo");
+			if(dateTo != null && dateTo != "") {
+				var current_value_split = dateTo.split('/');
+				if(current_value_split.length == 3) {
+					var send_value = parseInt("" + current_value_split[2] + current_value_split[1] + current_value_split[0], 10);
+					result[3] = "[" + send_value + "]";
+				}
+			}
+			
+			var programType = getParameterByName("pType");
+			if(programType != null && programType != "") {
+				result[4] = programType;
+			}
+			
+			var category = getParameterByName("pCategory");
+			if(category != null && category != "") {
+				result[5] = category;
+			}
+			
+			var meps = getParameterByName("meps");
+			if(meps != null && meps != "") {
+				result[6] = meps;
+			}
 		}
 		
 		return result;
@@ -587,32 +570,6 @@ $(function() {
 	/**
 	 * BUSCADOR
 	 * 
-	 * Evento personalizado que envía de nuevo los datos del buscador cuando se produce una petición AJAX.
-	 */ 
-	$(document).on("change", "#_search_WAR_europarltv_search_\\:formSearch\\:inputTextSearchBy," +
-		"#_search_WAR_europarltv_search_\\:formSearch\\:calendarFrom_input, " +
-		"#_search_WAR_europarltv_search_\\:formSearch\\:calendarTo_input, " +
-		"#_search_WAR_europarltv_search_\\:formSearch\\:types_focus," +
-		"#_search_WAR_europarltv_search_\\:formSearch\\:category_focus," +
-		"#_search_WAR_europarltv_search_\\:formSearch\\:meps_hinput", function() {
-		
-		var pageData = {name: 'search_results', level2: level2};
-		var customVars = {
-			site : getVariablesSitioPersonalizadas(),
-			page : getVariablesPaginaBusqueda()
-		};
-		
-		tag = initATInternetTag.getInstance();
-		tag.page.set(pageData);
-		tag.customVars.set(customVars);
-		tag.dispatch();
-		
-		debugData({action : '[Search] Search AJAX Request', pageData : pageData, customVars : customVars});
-	});
-	
-	/**
-	 * BUSCADOR
-	 * 
 	 * Al clicar al botón para mostrar la siguiente página de resultados,
 	 * indicamos a la herramienta de Analítica web, la keyword y la página de resultados mostrada.
 	 */ 
@@ -628,7 +585,7 @@ $(function() {
 		tag.internalSearch.set(internalSearchData); 
 		tag.dispatch();
 		
-		debugData({action : '[Search] Click on Load More results button', pageData : pageData, internalSearData : internalSearData});
+		debugData({action : '[Search] Click on Load More results button', pageData : pageData, internalSearchData : internalSearchData});
 	});
 	
 	/**
