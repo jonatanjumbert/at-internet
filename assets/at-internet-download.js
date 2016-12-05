@@ -346,10 +346,10 @@ $(function() {
 			result[1] = programTitle;
 		}
 		
-		if($('select#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:selectLanguage_input').length > 0) {
-			var language = $('select#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:selectLanguage_input').find(":selected").attr('data-code');
-			if(typeof language !== "undefined" && language != "") {
-				result[2] = language;
+		if($('input#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:downloadLangCode').length > 0) {
+			var idioma = $('input#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:downloadLangCode').val();
+			if(idioma !== "undefined" && idioma !== undefined && idioma != "") {
+				result[2] = idioma;
 			}
 		}
 		
@@ -387,24 +387,20 @@ $(function() {
 				result[4] = bitrate;
 			}
 		}
-		
+
 		// Voice over
-		if($('div#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:checkVoiceOver div.ui-state-active').length > 0) {
-			if($('select#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:selectLangVoiceOver_input').length > 0) {
-				var voiceOver = $('select#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:selectLangVoiceOver_input').find(":selected").attr('data-code');
-				if(typeof voiceOver !== "undefined" && voiceOver != "") {
-					result[5] = voiceOver;	
-				}
+		if($('input#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:requestVOLangCode').length > 0) {
+			var idioma = $('input#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:requestSTLangCode').val();
+			if(idioma !== "undefined" && idioma !== undefined && idioma != "") {
+				result[6] = idioma;
 			}
 		}
 		
 		// Burnt subtitles
-		if($('div#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:checkBurnSubt div.ui-state-active').length > 0) {
-			if($('select#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:selectLangSubtitles_input').length > 0) {
-				var subtitles = $('select#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:selectLangSubtitles_input').find(":selected").attr('data-code');
-				if(typeof subtitles !== "undefined" && subtitles != "") {
-					result[6] = subtitles;	
-				}
+		if($('input#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:requestSTLangCode').length > 0) {
+			var idioma = $('input#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:requestSTLangCode').val();
+			if(idioma !== "undefined" && idioma !== undefined && idioma != "") {
+				result[6] = idioma;
 			}
 		}
 		
@@ -425,10 +421,10 @@ $(function() {
 			result[1] = programTitle;
 		}
 		
-		if($('select#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:selectLang_input').length > 0) {
-			var language = $('select#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:selectLang_input').find(":selected").attr('data-code');
-			if(typeof language !== "undefined" && language != "") {
-				result[2] = language;	
+		if($('input#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:embeddedLangCode').length > 0) {
+			var idioma = $('input#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:embeddedLangCode').val();
+			if(idioma !== "undefined" && idioma !== undefined && idioma != "") {
+				result[2] = idioma;
 			}
 		}
 		
@@ -482,7 +478,7 @@ $(function() {
 				// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 				if($('#tags-list').length > 0) {
 					var lista_de_tags = $('#tags-list').attr('data-tags');
-					if(lista_de_tags !== "undefined") {
+					if(lista_de_tags !== undefined) {
 						var lista_de_tags_split = lista_de_tags.split('|');
 						if(lista_de_tags_split.length > 0) {
 							tagsData = {keywords: lista_de_tags_split};
