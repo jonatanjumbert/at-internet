@@ -297,41 +297,40 @@ $(function() {
 						var send_value = parseInt("" + current_value_split[2] + current_value_split[1] + current_value_split[0], 10);
 						result[3] = "[" + send_value + "]";
 					}
-				} else if($(this).attr('id') == "_downloadlist_WAR_europarltv_download_list_:j_idt6:types_focus") {
-					result[4] = "[" + this.value + "]";
-				} else if($(this).attr('id') == "_downloadlist_WAR_europarltv_download_list_:j_idt6:categories_focus") {
-					result[5] = "[" + this.value + "]";
-				} else if($(this).attr('id') == "_downloadlist_WAR_europarltv_download_list_:j_idt6:meps_input") {
-					var current_value = this.value;
-					var send_value = "[";
-					
-					if($.isArray(current_value)) {
-						$.each(current_value, function(i, val) {
-							send_value += val;
-							if(i + 1 < current_value.length) {
-								send_value += "|";
-							}
-						});
-					} else {
-						var current_value_split = current_value.split(',');
-						if(current_value_split.length > 0) {
-							$.each(current_value_split, function(i, val) {
-								send_value += val;
-								if(i + 1 < current_value_split.length) {
-									send_value += "|";
-								}
-							});
-						}
-					}
-					send_value += "]";
-					
-					if(send_value != "[]") {
-						result[6] = "[" + send_value + "]";
-					}
-				}
+				} 
 			});
+			
+			if($('label#_downloadlist_WAR_europarltv_download_list_\\:j_idt6\\:types_label').length > 0) {
+				var types_label = $('label#_downloadlist_WAR_europarltv_download_list_\\:j_idt6\\:types_label').html();
+				if(types_label != "") {
+					result[4] = types_label; 
+				}
+			}
+			
+			if($('label#_downloadlist_WAR_europarltv_download_list_\\:j_idt6\\:categories_label').length > 0) {
+				var categories_label = $('label#_downloadlist_WAR_europarltv_download_list_\\:j_idt6\\:categories_label').html();
+				if(categories_label != "") {
+					result[5] = categories_label; 
+				}
+			}
+			
+			if($('#_downloadlist_WAR_europarltv_download_list_\\:j_idt6\\:meps li span').length > 0) {
+				var send_value = "";
+				var meps = [];
+				
+				$('#_downloadlist_WAR_europarltv_download_list_\\:j_idt6\\:meps li span').each(function(i, val) {
+					var valor = $(val).html();
+					if(valor != "") {
+						meps.push(valor);
+					}
+				});
+				
+				if(meps.length > 0) {
+					send_value += meps.join('|');
+					result[6] = "[" + send_value + "]";
+				}
+			}
 		}
-		
 		return result;
 	};
 	
