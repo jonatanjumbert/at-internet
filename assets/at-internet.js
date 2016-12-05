@@ -248,7 +248,7 @@ $(function() {
 				'error' : is_error_page,
 				'video' : (!is_error_page && url_segments.indexOf("programme") > -1 ) ? true : false,
 				'about_us' : checkAboutUsPage(),
-				'rss' : (!is_error_page && url_segments.indexOf("rss") > -1 ) ? true : false,
+				'rss' : (!is_error_page && url_segments.indexOf("rss-feeds") > -1 ) ? true : false,
 			};
 		}
 		
