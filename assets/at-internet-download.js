@@ -2,7 +2,8 @@
  * Script que envía los datos de la analítica web al proveedor de AT-Internet. 
  * 
  * @author Jonatan Jumbert
- * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com 
+ * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com
+ * @version 0.2 
  */
 
 /*
@@ -257,15 +258,15 @@ $(function() {
 		
 		if($('#tags-list').length > 0) {
 			var tagsList = $('#tags-list').attr('data-tags');
-			if(tagsList !== "undefined" && tagsList != "") {
+			if(tagsList !== undefined && tagsList !== "undefined" && tagsList != "") {
 				variablesSitioPersonalizadas[2] = "[" + tagsList + "]";
 			}
 		}
 		
-		if(typeof(Storage) !== "undefined" && localStorage.previous_chapter_download != "") {
+		if(typeof(Storage) !== "undefined" && localStorage.previous_chapter_download !== undefined && localStorage.previous_chapter_download != "") {
 			variablesSitioPersonalizadas[3] = "[" + localStorage.previous_chapter_download + "]";
 		}
-		if(typeof(Storage) !== "undefined" && localStorage.previous_page_download != "") {
+		if(typeof(Storage) !== "undefined" && localStorage.previous_page_download !== undefined && localStorage.previous_page_download != "") {
 			variablesSitioPersonalizadas[4] = "[" + localStorage.previous_page_download + "]";
 		}
 		
