@@ -287,6 +287,7 @@ $(function() {
 						localStorage.previous_page = (typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] : "";
 					}
 					localStorage.current_time = Math.floor(Date.now() / 1000);
+					localStorage.previous_url = window.location.href;
 				}
 			}
 	    };
@@ -398,7 +399,7 @@ $(function() {
 	var getVariablesPaginaError = function() {
 		return result = {
 			1 : '404',
-			2 : (typeof(Storage) !== "undefined" && localStorage.previous_page != "") ? '[' + localStorage.previous_page + ']' : '',
+			2 : (typeof(Storage) !== "undefined" && localStorage.previous_url != "") ? '[' + localStorage.previous_url + ']' : '',
 			3 : '[' + window.location.href + ']'
 		};
 	};
@@ -572,6 +573,7 @@ $(function() {
 					localStorage.removeItem("previous_chapter");
 					localStorage.removeItem("previous_page");
 					localStorage.removeItem("current_time");
+					localStorage.removeItem("previous_url");
 				}
 			}
 		}
