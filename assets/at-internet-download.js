@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com
- * @version 0.2 
+ * @version 0.2.1 
  */
 
 /*
@@ -479,7 +479,7 @@ $(function() {
 				// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 				if($('#tags-list').length > 0) {
 					var lista_de_tags = $('#tags-list').attr('data-tags');
-					if(lista_de_tags !== undefined) {
+					if(lista_de_tags !== undefined && lista_de_tags !== "undefined") {
 						var lista_de_tags_split = lista_de_tags.split('|');
 						if(lista_de_tags_split.length > 0) {
 							tagsData = {keywords: lista_de_tags_split};
@@ -518,7 +518,7 @@ $(function() {
 		// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 		if($('#tags-list').length > 0) {
 			var lista_de_tags = $('#tags-list').attr('data-tags');
-			if(lista_de_tags !== "undefined") {
+			if(lista_de_tags !== undefined && lista_de_tags !== "undefined") {
 				var lista_de_tags_split = lista_de_tags.split('|');
 				if(lista_de_tags_split.length > 0) {
 					tagsData = {keywords: lista_de_tags_split};
@@ -548,7 +548,7 @@ $(function() {
 		// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 		if($('#tags-list').length > 0) {
 			var lista_de_tags = $('#tags-list').attr('data-tags');
-			if(lista_de_tags !== "undefined") {
+			if(lista_de_tags !== undefined && lista_de_tags !== "undefined") {
 				var lista_de_tags_split = lista_de_tags.split('|');
 				if(lista_de_tags_split.length > 0) {
 					tagsData = {keywords: lista_de_tags_split};
@@ -578,7 +578,7 @@ $(function() {
 		// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 		if($('#tags-list').length > 0) {
 			var lista_de_tags = $('#tags-list').attr('data-tags');
-			if(lista_de_tags !== "undefined") {
+			if(lista_de_tags !== undefined && lista_de_tags !== "undefined") {
 				var lista_de_tags_split = lista_de_tags.split('|');
 				if(lista_de_tags_split.length > 0) {
 					tagsData = {keywords: lista_de_tags_split};
@@ -681,7 +681,7 @@ $(function() {
 						// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 						if($('#tags-list').length > 0) {
 							var lista_de_tags = $('#tags-list').attr('data-tags');
-							if(lista_de_tags !== "undefined") {
+							if(lista_de_tags !== undefined && lista_de_tags !== "undefined") {
 								var lista_de_tags_split = lista_de_tags.split('|');
 								if(lista_de_tags_split.length > 0) {
 									tagsData = {keywords: lista_de_tags_split};
