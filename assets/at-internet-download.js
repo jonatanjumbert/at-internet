@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com
- * @version 0.2.1 
+ * @version 0.3 
  */
 
 /*
@@ -25,7 +25,7 @@ $(function() {
 	/**
 	 * Si estamos en modoDebug simulamos la variable de Liferay que nos da el ID del usuario actual.
 	 */
-	if(debugEnabled) {
+	if(debugEnabled && window.location.hostname != "www.europarltv.europa.eu") {
 		var Liferay = {
 			ThemeDisplay : {
 				getUserId : function() {
@@ -283,7 +283,9 @@ $(function() {
 		if($('.search-video-form').length > 0) {
 			$('div.search-video-form input').each(function () {
 				if($(this).attr('id') == "_downloadlist_WAR_europarltv_download_list_:j_idt6:inputTextSearchBy") {
-					result[1] = "[" + this.value + "]";
+					if(this.value != "") {
+						result[1] = "[" + this.value + "]";
+					}
 				} else if($(this).attr('id') == "_downloadlist_WAR_europarltv_download_list_:j_idt6:calendarFrom_input") {
 					var current_value = this.value;
 					var current_value_split = current_value.split('/');
@@ -523,12 +525,15 @@ $(function() {
 				if(lista_de_tags_split.length > 0) {
 					tagsData = {keywords: lista_de_tags_split};
 					tag.tags.set(tagsData);
+					
+					debugData({action : 'Tagging Download OK page', pageData : pageData, customVars : customVars, tagsData : tagsData});
 				}
 			}
+		} else {
+			debugData({action : 'Tagging Download OK page', pageData : pageData, customVars : customVars});
 		}
-		tag.dispatch();
 		
-		debugData({action : 'Tagging Download OK page', pageData : pageData, customVars : customVars, tagsData : tagsData});
+		tag.dispatch();
 	};
 	
 	/**
@@ -553,12 +558,15 @@ $(function() {
 				if(lista_de_tags_split.length > 0) {
 					tagsData = {keywords: lista_de_tags_split};
 					tag.tags.set(tagsData);
+					
+					debugData({action : 'Tagging Request OK page', pageData : pageData, customVars : customVars, tagsData : tagsData});
 				}
 			}
+		} else {
+			debugData({action : 'Tagging Request OK page', pageData : pageData, customVars : customVars});
 		}
-		tag.dispatch();
 		
-		debugData({action : 'Tagging Request OK page', pageData : pageData, customVars : customVars, tagsData : tagsData});
+		tag.dispatch();
 	};
 	
 	/**
@@ -583,12 +591,15 @@ $(function() {
 				if(lista_de_tags_split.length > 0) {
 					tagsData = {keywords: lista_de_tags_split};
 					tag.tags.set(tagsData);
+					
+					debugData({action : 'Tagging Embed OK page', pageData : pageData, customVars : customVars, tagsData : tagsData});
 				}
 			}
+		} else {
+			debugData({action : 'Tagging Embed OK page', pageData : pageData, customVars : customVars});
 		}
+
 		tag.dispatch();
-		
-		debugData({action : 'Tagging Embed OK page', pageData : pageData, customVars : customVars, tagsData : tagsData});
 	};
 	
 	/**
@@ -686,12 +697,15 @@ $(function() {
 								if(lista_de_tags_split.length > 0) {
 									tagsData = {keywords: lista_de_tags_split};
 									tag.tags.set(tagsData);
+									
+									debugData({action : 'Tagging Product page', pageData : pageData, customVars : customVars, tagsData : tagsData});
 								}
 							}
+						} else {
+							debugData({action : 'Tagging Product page', pageData : pageData, customVars : customVars});
 						}
-						tag.dispatch();
 						
-						debugData({action : 'Tagging Product page', pageData : pageData, customVars : customVars, tagsData : tagsData});
+						tag.dispatch();
 					}
 				}
 			}
@@ -721,6 +735,22 @@ $(function() {
 	 * los detalles de página vista y evento de click.
 	 */
 	$(document).on("click", 'span#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:panelVideosOriginal a', function() {
+		sendDownloadOKPageEvent();
+		
+		var programTitle = getProgramTitle();
+		if(programTitle != "") {
+			if($('select#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:selectLanguage_input').length > 0) {
+				var fileName = $(this).parent().text().replace('Download', '').replace(/\s*$/,"");
+				sendClickEvent({elem: $(this).get(0), name: fileName, chapter1: 'download', chapter2 : programTitle, chapter3 : 'download_file', type: 'download', action : '[Click] on Download File'});
+			}
+		}
+	});
+	
+	/**
+	 * Al clicar sobre el enlace de descarga de un video notificamos a la herramienta de analitica 
+	 * los detalles de página vista y evento de click.
+	 */
+	$(document).on("click", 'span#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:videoSubLabel a', function() {
 		sendDownloadOKPageEvent();
 		
 		var programTitle = getProgramTitle();
