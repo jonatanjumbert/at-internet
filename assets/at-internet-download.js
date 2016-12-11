@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com
- * @version 0.4 
+ * @version 0.4.1 
  */
 
 /*
@@ -143,6 +143,23 @@ $(function() {
 	    if(!results[2]) return '';
 	    return decodeURIComponent(results[2].replace(/\+/g, " "));
 	};
+	
+	/**
+	 * Desactiva el modo debug para el entorno de PRODUCCION a excepcion
+	 * si se pasa por parámetro en la URL ?debugEnabled=true 
+	 */
+	var configureDebugMode = (function() {
+		if(window.location.hostname != "www.europarltv.europa.eu") {
+			debugEnabled = true;
+		} else {
+			var debugParam = getParameterByName("debugEnabled");
+			if(debugParam != null && debugParam == "true") {
+				debugEnabled = true;
+			} else {
+				debugEnabled = false;
+			}
+		}
+	})();
 	
 	/**
 	 * Comprueba si la página actual es la home login.
