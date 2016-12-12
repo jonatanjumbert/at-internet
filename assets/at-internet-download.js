@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com
- * @version 0.4.1 
+ * @version 0.4.2 
  */
 
 /*
@@ -545,6 +545,8 @@ $(function() {
 					
 					debugData({action : 'Tagging Download OK page', pageData : pageData, customVars : customVars, tagsData : tagsData});
 				}
+			} else {
+				debugData({action : 'Tagging Download OK page', pageData : pageData, customVars : customVars});	
 			}
 		} else {
 			debugData({action : 'Tagging Download OK page', pageData : pageData, customVars : customVars});
@@ -578,6 +580,8 @@ $(function() {
 					
 					debugData({action : 'Tagging Request OK page', pageData : pageData, customVars : customVars, tagsData : tagsData});
 				}
+			} else {
+				debugData({action : 'Tagging Request OK page', pageData : pageData, customVars : customVars});
 			}
 		} else {
 			debugData({action : 'Tagging Request OK page', pageData : pageData, customVars : customVars});
@@ -611,6 +615,8 @@ $(function() {
 					
 					debugData({action : 'Tagging Embed OK page', pageData : pageData, customVars : customVars, tagsData : tagsData});
 				}
+			} else {
+				debugData({action : 'Tagging Embed OK page', pageData : pageData, customVars : customVars});
 			}
 		} else {
 			debugData({action : 'Tagging Embed OK page', pageData : pageData, customVars : customVars});
@@ -717,6 +723,8 @@ $(function() {
 									
 									debugData({action : 'Tagging Product page', pageData : pageData, customVars : customVars, tagsData : tagsData});
 								}
+							} else {
+								debugData({action : 'Tagging Product page', pageData : pageData, customVars : customVars});
 							}
 						} else {
 							debugData({action : 'Tagging Product page', pageData : pageData, customVars : customVars});
@@ -733,16 +741,14 @@ $(function() {
 	 * Al clicar sobre el botón descargar solo subtitulos de un video notificamos a la herramienta de analitica 
 	 * los detalles de página vista y evento de click.
 	 */
-	$(document).on("click", 'button#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:j_idt64', function() {
+	$(document).on("click", 'button#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:j_idt66', function() {
 		sendDownloadOKPageEvent();
 		
 		var programTitle = getProgramTitle();
 		if(programTitle != "") {
-			if($('select#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:selectLanguage_input').length > 0) {
-				var language = $('select#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:selectLanguage_input').find(":selected").attr('data-code');
-				if(typeof language !== "undefined" && language != "") {
-					sendClickEvent({elem: $(this).get(0), name: language, chapter1: 'download', chapter2 : programTitle, chapter3 : 'download_only_subtitles', type: 'download', action : '[Click] on Download Subtitles'});
-				}
+			if($('#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:downloadLangCode').length > 0) {
+				var language = $('#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:downloadLangCode').val();
+				sendClickEvent({elem: $(this).get(0), name: language, chapter1: 'download', chapter2 : programTitle, chapter3 : 'download_only_subtitles', type: 'download', action : '[Click] on Download Subtitles'});
 			}
 		}
 	});
@@ -751,23 +757,7 @@ $(function() {
 	 * Al clicar sobre el enlace de descarga de un video notificamos a la herramienta de analitica 
 	 * los detalles de página vista y evento de click.
 	 */
-	$(document).on("click", 'span#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:panelVideosOriginal a', function() {
-		sendDownloadOKPageEvent();
-		
-		var programTitle = getProgramTitle();
-		if(programTitle != "") {
-			if($('select#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:selectLanguage_input').length > 0) {
-				var fileName = $(this).parent().text().replace('Download', '').replace(/\s*$/,"");
-				sendClickEvent({elem: $(this).get(0), name: fileName, chapter1: 'download', chapter2 : programTitle, chapter3 : 'download_file', type: 'download', action : '[Click] on Download File'});
-			}
-		}
-	});
-	
-	/**
-	 * Al clicar sobre el enlace de descarga de un video notificamos a la herramienta de analitica 
-	 * los detalles de página vista y evento de click.
-	 */
-	$(document).on("click", 'span#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:videoSubLabel a', function() {
+	$(document).on("click", 'div#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:detailTabDownload a', function() {
 		sendDownloadOKPageEvent();
 		
 		var programTitle = getProgramTitle();
@@ -782,7 +772,7 @@ $(function() {
 	/**
 	 * Al clicar en el botón de Request, notificamos a la herramienta de analitica los detalles seleccionados por el usuario.
 	 */
-	$(document).on("click", "button#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:j_idt141[disabled!='disabled']", function() {
+	$(document).on("click", "button#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:j_idt143[disabled!='disabled']", function() {
 		sendRequestOKPageEvent();
 		
 		var programTitle = getProgramTitle();
@@ -801,14 +791,14 @@ $(function() {
 		if(programTitle != "") {
 			// Recuperamos el idoma seleccionado por el usuario...
 			if($('select#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:selectLang_input').length > 0) {
-				var language = $('select#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:selectLang_input').find(":selected").attr('data-code');
-				if(typeof language !== "undefined" && language != "") {
+				if($('#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:embeddedLangCode').length > 0) {
+					var language = $('#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:embeddedLangCode').val();
 					var id = $(this).attr('id');
 					
-					if(id == "_downloaddetail_WAR_europarltv_download_detail_:j_idt4:j_idt166") {
+					if(id == "_downloaddetail_WAR_europarltv_download_detail_:j_idt4:j_idt174") {
 						// Copy embed with subtitles
 						sendClickEvent({elem: $(this).get(0), name: language, chapter1: 'download', chapter2 : programTitle, chapter3 : 'embed_subtitles', type: 'download', action : '[Click] on Copy Embed with subtitles'});
-					} else if(id == "_downloaddetail_WAR_europarltv_download_detail_:j_idt4:j_idt178") {
+					} else if(id == "_downloaddetail_WAR_europarltv_download_detail_:j_idt4:j_idt180") {
 						// Copy embed with voice over
 						sendClickEvent({elem: $(this).get(0), name: language, chapter1: 'download', chapter2 : programTitle, chapter3 : 'embed_voice_over', type: 'download', action : '[Click] on Copy Embed with voice over'});
 					}
@@ -821,7 +811,7 @@ $(function() {
 	 * CLICKS
 	 * Cuando se clica el link de Download Thumbnail, hay que enviar un evento de click a AT-INTERNET.
 	 */
-	$(document).on("click", '#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:j_idt53', function(e) {
+	$(document).on("click", '#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:j_idt55', function(e) {
 		var programTitle = getProgramTitle();
 
 		if(programTitle != "") {
