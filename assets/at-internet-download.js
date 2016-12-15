@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com
- * @version 0.4.2 
+ * @version 0.5 
  */
 
 /*
@@ -21,19 +21,7 @@ $(function() {
 	var siteID = null;
 	var lang = "es";
 	var debugEnabled = true;
-	
-	/**
-	 * Si estamos en modoDebug simulamos la variable de Liferay que nos da el ID del usuario actual.
-	 */
-	if(debugEnabled && window.location.hostname != "www.europarltv.europa.eu") {
-		var Liferay = {
-			ThemeDisplay : {
-				getUserId : function() {
-					return "4871";
-				}	
-			}	
-		};
-	}
+	var id_usuario = ((typeof user_id !== "undefined") && (typeof user_id !== undefined)) ? user_id : "not_logged";
 	
 	// Comprobamos si existe console, para debugar
 	if(!window.console) console = { log: function(){} };
@@ -470,7 +458,7 @@ $(function() {
 			
 			tag.page.set(pageData);
 			tag.customVars.set(customVars);
-			tag.identifiedVisitor.set({id: Liferay.ThemeDisplay.getUserId()});
+			tag.identifiedVisitor.set({id: id_usuario});
 			tag.dispatch();
 			
 			debugData({action : 'Tagging Homepage', pageData : pageData, customVars : customVars});
@@ -480,7 +468,7 @@ $(function() {
 			
 			tag.page.set(pageData);
 			tag.customVars.set(customVars);
-			tag.identifiedVisitor.set({id: Liferay.ThemeDisplay.getUserId()});
+			tag.identifiedVisitor.set({id: id_usuario});
 			tag.dispatch();
 			
 			debugData({action : 'Tagging Login page', pageData : pageData, customVars : customVars});
@@ -493,7 +481,7 @@ $(function() {
 				
 				tag.page.set(pageData);
 				tag.customVars.set(customVars);
-				tag.identifiedVisitor.set({id: Liferay.ThemeDisplay.getUserId()});
+				tag.identifiedVisitor.set({id: id_usuario});
 				
 				// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 				if($('#tags-list').length > 0) {
@@ -532,7 +520,7 @@ $(function() {
 		
 		tag.page.set(pageData);
 		tag.customVars.set(customVars);
-		tag.identifiedVisitor.set({id: Liferay.ThemeDisplay.getUserId()});
+		tag.identifiedVisitor.set({id: id_usuario});
 		
 		// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 		if($('#tags-list').length > 0) {
@@ -567,7 +555,7 @@ $(function() {
 		
 		tag.page.set(pageData);
 		tag.customVars.set(customVars);
-		tag.identifiedVisitor.set({id: Liferay.ThemeDisplay.getUserId()});
+		tag.identifiedVisitor.set({id: id_usuario});
 		
 		// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 		if($('#tags-list').length > 0) {
@@ -602,7 +590,7 @@ $(function() {
 		
 		tag.page.set(pageData);
 		tag.customVars.set(customVars);
-		tag.identifiedVisitor.set({id: Liferay.ThemeDisplay.getUserId()});
+		tag.identifiedVisitor.set({id: id_usuario});
 		
 		// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 		if($('#tags-list').length > 0) {
@@ -710,7 +698,7 @@ $(function() {
 						
 						tag.page.set(pageData);
 						tag.customVars.set(customVars);
-						tag.identifiedVisitor.set({id: Liferay.ThemeDisplay.getUserId()});
+						tag.identifiedVisitor.set({id: id_usuario});
 						
 						// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 						if($('#tags-list').length > 0) {
