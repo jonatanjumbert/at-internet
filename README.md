@@ -24,6 +24,8 @@ Codeigniter website to test the correct way to implement a JS file to tag all pa
   
 ### Youtube API Queries for AT-Internet DashBoard
 
-| Documentation     	| Request  | Params 						| Description |
+All requests have same entry point: GET https://www.googleapis.com/youtube/v3/
+
+| Documentation     	| Method  | Params 						| Description |
 | ------------- |:----------:| -------------------------------------|:------------|
-| [Link](https://developers.google.com/youtube/v3/docs/subscriptions/list?hl=es-419) | https://www.googleapis.com/youtube/v3/subscriptions | ?part=contentDetails<br>&mine=true<br>&key=API_KEY | Devuelve los suscriptores de mi canal |
+| [Link](https://developers.google.com/youtube/v3/docs/subscriptions/list?hl=es-419) | subscriptions | ?part=contentDetails<br>&mine=true<br>&key=API_KEY | Devuelve los suscriptores de mi canal |
