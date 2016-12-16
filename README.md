@@ -29,4 +29,4 @@ All requests have same entry point: GET https://www.googleapis.com/youtube/v3/
 | Documentation     	| Method  | Params 						| Description |
 | ------------- |:----------:| -------------------------------------|:------------|
 | [Link](https://developers.google.com/youtube/v3/docs/subscriptions/list?hl=es-419) | subscriptions | ?part=contentDetails<br>&mine=true<br>&key=API_KEY | Devuelve los suscriptores de mi canal |
-| [Link](https://developers.google.com/youtube/v3/docs/channels/list?hl=es-419) | channels | ?part=statistics<br>&id=ID_CANAL<br>&key=API_KEY | Devuelve #reproducciones #comentarios #suscriptores #videos |
+| [Link](https://developers.google.com/youtube/v3/docs/channels/list?hl=es-419) | channels | ?part=statistics<br>&id=ID_CANAL<br>&key=API_KEY | Devuelve el total de: #reproducciones<br> #comentarios<br> #suscriptores<br> #videos |
