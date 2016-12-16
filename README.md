@@ -20,3 +20,10 @@ Codeigniter website to test the correct way to implement a JS file to tag all pa
   * [Player bind events example](http://player.kaltura.com/docs/index.php?path=kbind)
   * [Dynamic player embed](http://player.kaltura.com/docs/kwidget)
   * [Reading Player Properties and Expressions](https://vpaas.kaltura.com/documentation/Web-Video-Player/Kaltura-Media-Player-API.html#reading-player-properties-and-expressions)
+  
+  
+### Youtube API Queries for AT-Internet DashBoard
+
+| Documentation     	| Request  | Params 						| Description |
+| ------------- |:----------:| -------------------------------------|:------------|
+| https://developers.google.com/youtube/v3/docs/subscriptions/list?hl=es-419 | https://www.googleapis.com/youtube/v3/subscriptions | ?part=contentDetails&mine=true&key=API_KEY | Devuelve los suscriptores de mi canal |
