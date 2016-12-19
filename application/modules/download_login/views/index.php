@@ -5,6 +5,7 @@
 		<script>var site_id = '<?php echo $siteID; ?>'; var level2Id = <?php echo $level2ID; ?>;</script>
 		<script type="text/javascript" src="/assets/jquery.js"></script>
 		<script src="/assets/smarttag.js"></script>
+		<script type="text/javascript">var user_id = 1235;</script>
 		<script type="text/javascript" src="/assets/at-internet-download.js"></script>
 		<link rel="stylesheet" href="/assets/reset.css" />
 	</head>

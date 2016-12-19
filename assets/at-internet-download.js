@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com
- * @version 0.5 
+ * @version 0.6
  */
 
 /*
@@ -21,7 +21,6 @@ $(function() {
 	var siteID = null;
 	var lang = "es";
 	var debugEnabled = true;
-	var id_usuario = ((typeof user_id !== "undefined") && (typeof user_id !== undefined)) ? user_id : "not_logged";
 	
 	// Comprobamos si existe console, para debugar
 	if(!window.console) console = { log: function(){} };
@@ -440,6 +439,25 @@ $(function() {
 	};
 	
 	/**
+	 * Devuelve el ID del usuario en sessión si no estamos en la página de login y si no se ha enviado previamente
+	 * ya a AT-Internet (expira en 1hora, entonces se debería volver a enviar).
+	 */
+	var getUserId = function() {
+		if(typeof(Storage) !== "undefined" && localStorage.user_id !== undefined && localStorage.user_id != "") {
+			return false;
+		} else {
+			if(!current_url.login) {
+				if((typeof user_id !== "undefined") && (typeof user_id !== undefined)) {
+					localStorage.user_id = user_id;
+					return user_id;
+				}
+			}
+		}
+		
+		return false;
+	};
+	
+	/**
 	 * Dependiendo de la página que se esté visualizando se envian unos datos u otros 
 	 * a la herramienta de Analítica Web de AT-Internet.
 	 */
@@ -451,6 +469,7 @@ $(function() {
 		var pageData = {};
 		var customVars = {};
 		var tagsData = {};
+		var id_usuario = getUserId();
 		
 		if(current_url.home) {
 			pageData = {name: 'homepage', chapter1: 'download', level2: level2}
@@ -458,7 +477,9 @@ $(function() {
 			
 			tag.page.set(pageData);
 			tag.customVars.set(customVars);
-			tag.identifiedVisitor.set({id: id_usuario});
+			if(id_usuario !== false) {
+				tag.identifiedVisitor.set({id: id_usuario});
+			}
 			tag.dispatch();
 			
 			debugData({action : 'Tagging Homepage', pageData : pageData, customVars : customVars});
@@ -468,7 +489,6 @@ $(function() {
 			
 			tag.page.set(pageData);
 			tag.customVars.set(customVars);
-			tag.identifiedVisitor.set({id: id_usuario});
 			tag.dispatch();
 			
 			debugData({action : 'Tagging Login page', pageData : pageData, customVars : customVars});
@@ -481,7 +501,9 @@ $(function() {
 				
 				tag.page.set(pageData);
 				tag.customVars.set(customVars);
-				tag.identifiedVisitor.set({id: id_usuario});
+				if(id_usuario !== false) {
+					tag.identifiedVisitor.set({id: id_usuario});
+				}
 				
 				// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 				if($('#tags-list').length > 0) {
@@ -520,7 +542,11 @@ $(function() {
 		
 		tag.page.set(pageData);
 		tag.customVars.set(customVars);
-		tag.identifiedVisitor.set({id: id_usuario});
+		
+		var id_usuario = getUserId();
+		if(id_usuario !== false) {
+			tag.identifiedVisitor.set({id: id_usuario});
+		}
 		
 		// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 		if($('#tags-list').length > 0) {
@@ -555,7 +581,11 @@ $(function() {
 		
 		tag.page.set(pageData);
 		tag.customVars.set(customVars);
-		tag.identifiedVisitor.set({id: id_usuario});
+		
+		var id_usuario = getUserId();
+		if(id_usuario !== false) {
+			tag.identifiedVisitor.set({id: id_usuario});
+		}
 		
 		// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 		if($('#tags-list').length > 0) {
@@ -590,7 +620,11 @@ $(function() {
 		
 		tag.page.set(pageData);
 		tag.customVars.set(customVars);
-		tag.identifiedVisitor.set({id: id_usuario});
+		
+		var id_usuario = getUserId();
+		if(id_usuario !== false) {
+			tag.identifiedVisitor.set({id: id_usuario});
+		}
 		
 		// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 		if($('#tags-list').length > 0) {
@@ -653,6 +687,7 @@ $(function() {
 					localStorage.removeItem("previous_chapter_download");
 					localStorage.removeItem("previous_page_download");
 					localStorage.removeItem("current_time_download");
+					localStorage.removeItem("user_id");
 				}
 			}
 		}
@@ -698,7 +733,11 @@ $(function() {
 						
 						tag.page.set(pageData);
 						tag.customVars.set(customVars);
-						tag.identifiedVisitor.set({id: id_usuario});
+						
+						var id_usuario = getUserId();
+						if(id_usuario !== false) {
+							tag.identifiedVisitor.set({id: id_usuario});
+						}
 						
 						// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
 						if($('#tags-list').length > 0) {
