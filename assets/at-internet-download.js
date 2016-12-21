@@ -3,14 +3,13 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com
- * @version 0.6
+ * @version 0.7
  */
 
 /*
  * Variables globales de la configuración AT-Internet
  * y de los datos de la propia página para poder utilizar desde el callback del player.
  */ 
-var tag = null;
 var current_url = null;
 var debugData = null;
 var level2 = null;
@@ -233,20 +232,11 @@ $(function() {
 	 * @FIXME Importante que Balidea, ponga esos datos en el código fuente de todas las páginas dependiendo del Entorno (DEV/PRE/PRO).
 	 */
 	var initATInternetTag = (function() {
-		var instance;
-		
-		function createInstance() {
-			siteID = (typeof site_id !== "undefined") ? site_id : 573738;
-			level2 = (typeof level2Id !== "undefined") ? level2Id : 2;
-			return new ATInternet.Tracker.Tag({log: "logc407", logSSL: "logs1407", secure: false, site: siteID, domain: "xiti.com"});
-		}
-		
 		return {
 			getInstance: function() {
-				if(!instance) {
-					instance = createInstance();
-				}
-				return instance;
+				siteID = (typeof site_id !== "undefined") ? site_id : 573738;
+				level2 = (typeof level2Id !== "undefined") ? level2Id : 2;
+				return new ATInternet.Tracker.Tag({log: "logc407", logSSL: "logs1407", secure: false, site: siteID, domain: "xiti.com"});
 			}
 	    };
 	})();
@@ -464,7 +454,7 @@ $(function() {
 	var tagThisPage = (function() {
 		// Iniciamos el objeto y el envío de datos al proveedor de Analítica web.
 		current_url = initURLObject.getInstance();
-		tag = initATInternetTag.getInstance();
+		var tag = initATInternetTag.getInstance();
 		
 		var pageData = {};
 		var customVars = {};
@@ -540,6 +530,7 @@ $(function() {
 			page : getVariablesPaginaDownload()
 		};
 		
+		var tag = initATInternetTag.getInstance();
 		tag.page.set(pageData);
 		tag.customVars.set(customVars);
 		
@@ -579,6 +570,7 @@ $(function() {
 			page : getVariablesPaginaRequest()
 		};
 		
+		var tag = initATInternetTag.getInstance();
 		tag.page.set(pageData);
 		tag.customVars.set(customVars);
 		
@@ -618,6 +610,7 @@ $(function() {
 			page : getVariablesPaginaEmbed()
 		};
 		
+		var tag = initATInternetTag.getInstance();
 		tag.page.set(pageData);
 		tag.customVars.set(customVars);
 		
@@ -668,7 +661,7 @@ $(function() {
 			clickData.chapter3 = data.chapter3;
 		}
 		
-		tag = initATInternetTag.getInstance();
+		var tag = initATInternetTag.getInstance();
 		tag.clickListener.send(clickData);
 		
 		debugData({action : data.action, clickData : clickData});
@@ -706,7 +699,7 @@ $(function() {
 			page : getVariablesPaginaBusqueda()
 		};
 		
-		tag = initATInternetTag.getInstance();
+		var tag = initATInternetTag.getInstance();
 		tag.page.set(pageData);
 		tag.customVars.set(customVars);
 		tag.dispatch();
@@ -721,6 +714,7 @@ $(function() {
 	$(document).on("click", 'div.col-download ul.nav.nav-tabs li', function() {
 		if($(this).hasClass('active')) {
 			var programTitle = getProgramTitle();
+			var tag = initATInternetTag.getInstance();
 
 			if(programTitle != "") {
 				var tab_link = $('a', this);
