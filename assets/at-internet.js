@@ -3,14 +3,13 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com 
- * @version 0.8.1
+ * @version 0.9
  */
 
 /*
  * Variables globales de la configuración AT-Internet
  * y de los datos de la propia página para poder utilizar desde el callback del player.
  */ 
-var tag = null;
 var current_url = null;
 var debugData = null;
 var level2 = null;
@@ -21,6 +20,7 @@ var producer = "";
  * AT-Internet los datos de consumo de cada uno de los videos.
  */
 window.kalturaCallbackATInternet = function(playerId) {
+	var tag = initATInternetTag.getInstance();
 	var kdp = document.getElementById(playerId);
 	var mediaLabel = ((typeof producer !== "undefined" && producer != "") ? producer + "::" : "") + ((typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] + "::" : "") + ((typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] : "");
 
@@ -316,20 +316,11 @@ $(function() {
 	 * @FIXME Importante que Balidea, ponga esos datos en el código fuente de todas las páginas dependiendo del Entorno (DEV/PRE/PRO).
 	 */
 	var initATInternetTag = (function() {
-		var instance;
-		
-		function createInstance() {
-			siteID = (typeof site_id !== "undefined") ? site_id : 573738;
-			level2 = (typeof level2Id !== "undefined") ? level2Id : 1;
-			return new ATInternet.Tracker.Tag({log: "logc407", logSSL: "logs1407", secure: false, site: siteID, domain: "xiti.com"});
-		}
-		
 		return {
 			getInstance: function() {
-				if(!instance) {
-					instance = createInstance();
-				}
-				return instance;
+				siteID = (typeof site_id !== "undefined") ? site_id : 573738;
+				level2 = (typeof level2Id !== "undefined") ? level2Id : 1;
+				return new ATInternet.Tracker.Tag({log: "logc407", logSSL: "logs1407", secure: false, site: siteID, domain: "xiti.com"});
 			}
 	    };
 	})();
@@ -429,7 +420,7 @@ $(function() {
 	var tagThisPage = (function() {
 		// Iniciamos el objeto y el envío de datos al proveedor de Analítica web.
 		current_url = initURLObject.getInstance();
-		tag = initATInternetTag.getInstance();
+		var tag = initATInternetTag.getInstance();
 		
 		var pageData = {};
 		var customVars = {};
@@ -610,7 +601,7 @@ $(function() {
 			resultPageNumber: $('div#_search_WAR_europarltv_search_\\:formSearch\\:initialResultsPanel div.videos-list').length + 1
 		};
 		
-		tag = initATInternetTag.getInstance();
+		var tag = initATInternetTag.getInstance();
 		tag.page.set(pageData); 
 		tag.internalSearch.set(internalSearchData); 
 		tag.dispatch();
@@ -636,7 +627,7 @@ $(function() {
 		    resultPosition: ((pagina_resultados == 0) ? (num_videos_delante + 1) : ((num_videos_pagina * pagina_resultados) + (num_videos_delante + 1)))
 		};
 		
-		tag = initATInternetTag.getInstance();
+		var tag = initATInternetTag.getInstance();
 		tag.internalSearch.send(internalSearchData);
 		
 		debugData({action : '[Search] Click on Search Result', internalSearchData : internalSearchData});
@@ -660,7 +651,7 @@ $(function() {
 	        type: 'action'
 	    };
 		
-		tag = initATInternetTag.getInstance();
+		var tag = initATInternetTag.getInstance();
 		tag.clickListener.send(clickData);
 		
 		debugData({action : '[Click] on Tag', clickData : clickData});
@@ -683,7 +674,7 @@ $(function() {
 	        type: 'action'
 	    };
 		
-		tag = initATInternetTag.getInstance();
+		var tag = initATInternetTag.getInstance();
 		tag.clickListener.send(clickData);
 		
 		debugData({action : '[Click] on Share link (video)', clickData : clickData});
@@ -730,7 +721,7 @@ $(function() {
 			clickData.chapter3 = getLastSegmentFromURL(window.location.href);
 		}
 
-		tag = initATInternetTag.getInstance();
+		var tag = initATInternetTag.getInstance();
 		tag.clickListener.send(clickData);
 		
 		debugData({action : '[Click] on Share link (footer)', clickData : clickData});
@@ -753,7 +744,7 @@ $(function() {
 		        type: 'action'
 		    };
 		
-			tag = initATInternetTag.getInstance();
+			var tag = initATInternetTag.getInstance();
 			tag.clickListener.send(clickData);
 			
 			debugData({action : '[Click] on Exit Link', clickData : clickData});
@@ -774,7 +765,7 @@ $(function() {
 	        type: 'action'
 	    };
 	
-		tag = initATInternetTag.getInstance();
+		var tag = initATInternetTag.getInstance();
 		tag.clickListener.send(clickData);
 		
 		debugData({action : '[Click] on Newsletter Subscription', clickData : clickData});
