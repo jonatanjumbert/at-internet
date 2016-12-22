@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com 
- * @version 0.9
+ * @version 0.9.1
  */
 
 /*
@@ -20,7 +20,7 @@ var producer = "";
  * AT-Internet los datos de consumo de cada uno de los videos.
  */
 window.kalturaCallbackATInternet = function(playerId) {
-	var tag = initATInternetTag.getInstance();
+	var tag = new ATInternet.Tracker.Tag({log: "logc407", logSSL: "logs1407", secure: false, site: ((typeof site_id !== "undefined") ? site_id : 573738), domain: "xiti.com"});
 	var kdp = document.getElementById(playerId);
 	var mediaLabel = ((typeof producer !== "undefined" && producer != "") ? producer + "::" : "") + ((typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] + "::" : "") + ((typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] : "");
 
