@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com 
- * @version 0.9.1
+ * @version 0.9.2
  */
 
 /*
@@ -634,6 +634,33 @@ $(function() {
 	});
 	
 	/**
+	 * Envía un evento de click a la herramienta de AT-Internet segun los datos recibidos por parámetro
+	 */
+	var sendClickEvent = function(data) {
+		var clickData = {
+	        elem: data.elem,
+	        name: data.name,
+	        level2: level2,
+	        type: data.type
+	    };
+		
+		if(typeof data.chapter1 !== "undefined" && data.chapter1 != "") {
+			clickData.chapter1 = data.chapter1;
+		}
+		if(typeof data.chapter2 !== "undefined" && data.chapter2 != "") {
+			clickData.chapter2 = data.chapter2;
+		}
+		if(typeof data.chapter3 !== "undefined" && data.chapter3 != "") {
+			clickData.chapter3 = data.chapter3;
+		}
+		
+		var tag = initATInternetTag.getInstance();
+		tag.clickListener.send(clickData);
+		
+		debugData({action : data.action, clickData : clickData});
+	};
+	
+	/**
 	 * CLICKS
 	 * 
 	 * Cuando se clica un TAG, hay que enviar un evento de click a AT-INTERNET.
@@ -641,20 +668,15 @@ $(function() {
 	 */
 	$(document).on("click", '.tags-list a', function(e) {
 		var current_url = initURLObject.getInstance();
-		var clickData = {
-	        elem: $(this).get(0),
-	        name: getLastSegmentFromURL(window.location.href),
-	        chapter1: 'tags',
-	        chapter2: getLastSegmentFromURL($(this).attr('href')),
-	        chapter3: (current_url.tag) ? 'tags_page' : 'product_page',
-	        level2: level2,
-	        type: 'action'
-	    };
-		
-		var tag = initATInternetTag.getInstance();
-		tag.clickListener.send(clickData);
-		
-		debugData({action : '[Click] on Tag', clickData : clickData});
+		sendClickEvent({
+			elem: $(this).get(0), 
+			name: getLastSegmentFromURL(window.location.href), 
+			chapter1: 'tags', 
+			chapter2 : getLastSegmentFromURL($(this).attr('href')), 
+			chapter3 : ((current_url.tag) ? 'tags_page' : 'product_page'), 
+			type: 'action', 
+			action : '[Click] on Tag'
+		});
 	});
 	
 	/**
@@ -665,19 +687,14 @@ $(function() {
 	 */
 	$(document).on("click", 'ul.socialmedia-buttons a', function(e) {
 		var current_url = initURLObject.getInstance();
-		var clickData = {
-	        elem: $(this).get(0),
+		sendClickEvent({
+			elem: $(this).get(0),
 	        name: $(this).text().trim(),
 	        chapter1: 'share_video',
 	        chapter2 : (typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] : '', 
-	        level2: level2,
-	        type: 'action'
-	    };
-		
-		var tag = initATInternetTag.getInstance();
-		tag.clickListener.send(clickData);
-		
-		debugData({action : '[Click] on Share link (video)', clickData : clickData});
+	        type: 'action',
+	        action : '[Click] on Share link (video)'
+		});
 	});
 	
 	/**
@@ -692,7 +709,6 @@ $(function() {
 	        elem: $(this).get(0),
 	        name: $(this).text().trim(),
 	        chapter1: 'share_page',
-	        level2: level2,
 	        type: 'action'
 	    };
 		
@@ -720,11 +736,9 @@ $(function() {
 		} else {
 			clickData.chapter3 = getLastSegmentFromURL(window.location.href);
 		}
-
-		var tag = initATInternetTag.getInstance();
-		tag.clickListener.send(clickData);
 		
-		debugData({action : '[Click] on Share link (footer)', clickData : clickData});
+		clickData.action = '[Click] on Share link (footer)';
+		sendClickEvent(clickData);
 	});
 	
 	/**
@@ -740,14 +754,11 @@ $(function() {
 		        elem: $(this).get(0),
 		        name: $(this).attr('href'),
 		        chapter1: 'exit_link',
-		        level2: level2,
-		        type: 'action'
+		        type: 'action',
+		        action : '[Click] on Exit Link'
 		    };
 		
-			var tag = initATInternetTag.getInstance();
-			tag.clickListener.send(clickData);
-			
-			debugData({action : '[Click] on Exit Link', clickData : clickData});
+			sendClickEvent(clickData);
 		}
 	});
 	
@@ -757,18 +768,15 @@ $(function() {
 	 * Cuando alguien selecciona el botón de enviar para suscribirse a la newsletter
 	 * también debemos enviar una notificacion de click a AT-Internet.
 	 */
-	$(document).on("click", 'form.subscription-form > input[type=button]', function(e) {
+	$(document).on("click", 'form.subscription-form input.btn-success', function(e) {
 		var clickData = {
 	        elem: $(this).get(0),
 	        name: 'newsletter_subscription',
-	        level2: level2,
-	        type: 'action'
+	        type: 'action',
+	        action : '[Click] on Newsletter Subscription'
 	    };
-	
-		var tag = initATInternetTag.getInstance();
-		tag.clickListener.send(clickData);
 		
-		debugData({action : '[Click] on Newsletter Subscription', clickData : clickData});
+		sendClickEvent(clickData);
 	});
 	
 	if($('span.video-with-producer').length > 0) {
