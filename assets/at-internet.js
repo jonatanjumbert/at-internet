@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com 
- * @version 0.9.2
+ * @version 1.0
  */
 
 /*
@@ -153,7 +153,7 @@ $(function() {
 			}
 		}
 		url_segments = url_segments_cleaned;
-		if(lang == "EN" && url_segments[0] != "EN") {
+		if(lang == "EN" && url_segments[0].toUpperCase() != "EN") {
 			url_segments.unshift('EN');
 		} 
 		if(url_segments.length == 0) {
