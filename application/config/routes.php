@@ -62,11 +62,15 @@ $_ROUTES = array(
 	'\w{2}/tag/tag-error-404' => 'tag/error',
 	'tag/(:any)' => 'tag/index',
 	'\w{2}/tag/(:any)' => 'tag/index',
+	'tag' => 'tag/index',
+	'\w{2}/tag' => 'tag/index',
 	
 	'category/categoria-error-404' => 'category/error',
 	'\w{2}/category/categoria-error-404' => 'category/error',
 	'category/(:any)' => 'category/index',
 	'\w{2}/category/(:any)' => 'category/index',
+	'category' => 'category/index',
+	'\w{2}/category' => 'category/index',
 	
 	'\w{2}/search' => 'search/index',
 		
@@ -86,7 +90,9 @@ $_ROUTES = array(
 	'\w{2}/programme/(:any)/producto-error-404' => 'product/error',
 	'programme/(:any)/(:any)' => 'product/index',
 	'\w{2}/programme/(:any)/(:any)' => 'product/index',
-	
+	'programme' => 'product/index',
+	'\w{2}/programme' => 'product/index',
+
 	// URL Site Download
 	/*
 	'default_controller' => 'download_login/index',
@@ -95,7 +101,7 @@ $_ROUTES = array(
 	'download' => 'download_homepage/index',
 	'\w{2}/download' => 'download_homepage/index',
 	'download/detail/programmeId/(:num)' => 'download_programme/index',
-	'\w{2}/download/detail/programmeId/(:num)' => 'download_programme/index'
+	'\w{2}/download/detail/programmeId/(:num)' => 'download_programme/index',
 	*/
 );
 

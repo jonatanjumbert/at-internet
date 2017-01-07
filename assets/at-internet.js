@@ -153,7 +153,7 @@ $(function() {
 			}
 		}
 		url_segments = url_segments_cleaned;
-		if(lang == "EN" && url_segments[0].toUpperCase() != "EN") {
+		if(lang == "EN" && url_segments[0] !== "undefined" && url_segments[0] !== undefined && url_segments[0].toUpperCase() != "EN") {
 			url_segments.unshift('EN');
 		} 
 		if(url_segments.length == 0) {
@@ -245,6 +245,39 @@ $(function() {
 		}
 	};
 	
+	var checkGeneralCategoryURL = function(is_error_page) {
+		if(!is_error_page && url_segments.indexOf("category") > -1 ) {
+			if(url_segments.length == 2) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	};
+	
+	var checkGeneralTagURL = function(is_error_page) {
+		if(!is_error_page && url_segments.indexOf("tag") > -1 ) {
+			if(url_segments.length == 2) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	};
+	
+	var checkGeneralProgrammeURL = function(is_error_page) {
+		if(!is_error_page && url_segments.indexOf("programme") > -1 ) {
+			if(url_segments.length == 2) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+	};
+	
 	/**
 	 * Objeto que contiene los datos de los segmentos de la URL actual, idioma y determina que tipo de página estamos visitando.
 	 */ 
@@ -253,6 +286,9 @@ $(function() {
 		
 		function createInstance() {
 			var is_error_page = checkErrorPage();
+			var is_general_category = checkGeneralCategoryURL(is_error_page);
+			var is_general_tag = checkGeneralTagURL(is_error_page);
+			var is_general_programme = checkGeneralProgrammeURL(is_error_page);
 			
 			return {
 				'url_path' : url_segments,
@@ -260,13 +296,16 @@ $(function() {
 				'previous_chapter' : (typeof(Storage) !== "undefined" && localStorage.previous_chapter != "") ? localStorage.previous_chapter : "",
 				'lang' : lang,
 				'home' : checkHomePage(),
-				'category' : (!is_error_page && url_segments.indexOf("category") > -1 ) ? true : false,
-				'tag' : (!is_error_page && url_segments.indexOf("tag") > -1 ) ? true : false,
+				'category' : (!is_error_page && !is_general_category && url_segments.indexOf("category") > -1 ) ? true : false,
+				'tag' : (!is_error_page && !is_general_tag && url_segments.indexOf("tag") > -1 ) ? true : false,
 				'search' : (url_segments.indexOf("search") === -1 ) ? false : true,
 				'error' : is_error_page,
-				'video' : (!is_error_page && url_segments.indexOf("programme") > -1 ) ? true : false,
+				'video' : (!is_error_page && !is_general_programme && url_segments.indexOf("programme") > -1 ) ? true : false,
 				'about_us' : checkAboutUsPage(),
 				'rss' : (!is_error_page && url_segments.indexOf("rss-feeds") > -1 ) ? true : false,
+				'general_category' : is_general_category,
+				'general_tag' : is_general_tag,
+				'general_programme' : is_general_programme
 			};
 		}
 		
@@ -303,7 +342,17 @@ $(function() {
 					} else if(current_url.about_us) {
 						localStorage.previous_chapter = "about_us";
 						localStorage.previous_page = (typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] : "";
+					} else if(current_url.general_category) {
+						localStorage.previous_chapter = "categories";
+						localStorage.previous_page = "categories";
+					} else if(current_url.general_tag) {
+						localStorage.previous_chapter = "tags";
+						localStorage.previous_page = "tags";
+					} else if(current_url.general_programme) {
+						localStorage.previous_chapter = "";
+						localStorage.previous_page = "programme";
 					}
+					
 					localStorage.current_time = Math.floor(Date.now() / 1000);
 					localStorage.previous_url = window.location.href;
 				}
@@ -413,6 +462,43 @@ $(function() {
 		};
 	};
 	
+	var getPageData = function() {
+		var current_url = initURLObject.getInstance();
+		var pageData = {};
+		
+		if(current_url.home) {
+			pageData = {name: 'homepage', chapter1: 'hompage', level2: level2}
+		} else if(current_url.category) {
+			if(typeof current_url.url_path[2] !== "undefined") {
+				pageData = {name: current_url.url_path[2], chapter1: 'categories', level2: level2};
+			}
+		} else if(current_url.tag) {
+			if(typeof current_url.url_path[2] !== "undefined") {
+				pageData = {name: current_url.url_path[2], chapter1: 'tags', level2: level2};
+			}
+		} else if(current_url.search) {
+			pageData = {name: 'search_results', level2: level2};
+		} else if(current_url.error) {
+			pageData = {name: 'error_page', level2: level2};
+		} else if(current_url.video) {
+			if(typeof current_url.url_path[3] !== "undefined") {
+				pageData = {name: current_url.url_path[3], chapter1: 'product_page', chapter2 : current_url.url_path[2], level2: level2};
+			}
+		} else if(current_url.about_us) {
+			pageData = {name: current_url.url_path[1], chapter1 : 'about_us', level2: level2};
+		} else if(current_url.rss) {
+			pageData = {name: 'RSS feed', level2: level2};
+		} else if(current_url.general_category) {
+			pageData = {name: 'categories', chapter1: 'categories', level2: level2};
+		} else if(current_url.general_tag) {
+			pageData = {name: 'tags', chapter1: 'tags', level2: level2};
+		} else if(current_url.general_programme) {
+			pageData = {name: 'programme', level2: level2};
+		}
+		
+		return pageData;
+	};
+	
 	/**
 	 * Dependiendo de la página que se esté visualizando se envian unos datos u otros 
 	 * a la herramienta de Analítica Web de AT-Internet.
@@ -422,13 +508,12 @@ $(function() {
 		current_url = initURLObject.getInstance();
 		var tag = initATInternetTag.getInstance();
 		
-		var pageData = {};
+		var pageData = getPageData();
 		var customVars = {};
 		var tagsData = {};
 		var internalSearch = {};
 		
 		if(current_url.home) {
-			pageData = {name: 'homepage', chapter1: 'hompage', level2: level2}
 			customVars = {site: getVariablesSitioPersonalizadas()};
 			
 			tag.page.set(pageData);
@@ -438,7 +523,6 @@ $(function() {
 			debugData({action : 'Tagging Homepage', pageData : pageData, customVars : customVars});
 		} else if(current_url.category) {
 			if(typeof current_url.url_path[2] !== "undefined") {
-				pageData = {name: current_url.url_path[2], chapter1: 'categories', level2: level2};
 				customVars = {site: getVariablesSitioPersonalizadas()};
 				
 				tag.page.set(pageData);
@@ -449,7 +533,6 @@ $(function() {
 			}
 		} else if(current_url.tag) {
 			if(typeof current_url.url_path[2] !== "undefined") {
-				pageData = {name: current_url.url_path[2], chapter1: 'tags', level2: level2};
 				customVars = {site: getVariablesSitioPersonalizadas()};
 				
 				tag.page.set(pageData);
@@ -488,7 +571,6 @@ $(function() {
 				debugData(data);
 			}
 		} else if(current_url.search) {
-			pageData = {name: 'search_results', level2: level2};
 			customVars = {
 				site : getVariablesSitioPersonalizadas(),
 				page : getVariablesPaginaBusqueda()
@@ -508,7 +590,6 @@ $(function() {
 			
 			debugData({action : 'Tagging Search page', pageData : pageData, customVars : customVars, internalSearch : internalSearch});
 		} else if(current_url.error) {
-			pageData = {name: 'error_page', level2: level2};
 			customVars = {
 				site : getVariablesSitioPersonalizadas(),
 				page : getVariablesPaginaError()
@@ -521,7 +602,6 @@ $(function() {
 			debugData({action : 'Tagging Error page', pageData : pageData, customVars : customVars});
 		} else if(current_url.video) {
 			if(typeof current_url.url_path[3] !== "undefined") {
-				pageData = {name: current_url.url_path[3], chapter1: 'product_page', chapter2 : current_url.url_path[2], level2: level2};
 				customVars = {site: getVariablesSitioPersonalizadas()};
 				
 				tag.page.set(pageData);
@@ -547,7 +627,6 @@ $(function() {
 				debugData(data);
 			}
 		} else if(current_url.about_us) {
-			pageData = {name: current_url.url_path[1], chapter1 : 'about_us', level2: level2};
 			customVars = {site: getVariablesSitioPersonalizadas()};
 			
 			tag.page.set(pageData);
@@ -556,7 +635,6 @@ $(function() {
 			
 			debugData({action : 'Tagging About us page', pageData : pageData, customVars : customVars});
 		} else if(current_url.rss) {
-			pageData = {name: 'RSS feed', level2: level2};
 			customVars = {site: getVariablesSitioPersonalizadas()};
 			
 			tag.page.set(pageData);
@@ -564,6 +642,30 @@ $(function() {
 			tag.dispatch();
 			
 			debugData({action : 'Tagging RSS page', pageData : pageData, customVars : customVars});
+		} else if(current_url.general_category) {
+			customVars = {site: getVariablesSitioPersonalizadas()};
+			
+			tag.page.set(pageData);
+			tag.customVars.set();
+			tag.dispatch();
+			
+			debugData({action : 'Tagging General Category page', pageData : pageData, customVars : customVars});
+		} else if(current_url.general_tag) {
+			customVars = {site: getVariablesSitioPersonalizadas()};
+			
+			tag.page.set(pageData);
+			tag.customVars.set();
+			tag.dispatch();
+			
+			debugData({action : 'Tagging General Tag page', pageData : pageData, customVars : customVars});
+		} else if(current_url.general_programme) {
+			customVars = {site: getVariablesSitioPersonalizadas()};
+			
+			tag.page.set(pageData);
+			tag.customVars.set();
+			tag.dispatch();
+			
+			debugData({action : 'Tagging General Programme page', pageData : pageData, customVars : customVars});
 		}
 		
 		initURLObject.setCurrentPageData();
@@ -769,9 +871,12 @@ $(function() {
 	 * también debemos enviar una notificacion de click a AT-Internet.
 	 */
 	$(document).on("click", 'form.subscription-form input.btn-success', function(e) {
+		var pageData = getPageData();
+		var current_page_name = "newsletter_subscription";
+		
 		var clickData = {
 	        elem: $(this).get(0),
-	        name: 'newsletter_subscription',
+	        name: (typeof pageData.name !== "undefined" && typeof pageData.name !== undefined) ? current_page_name + '::' + pageData.name : current_page_name,
 	        type: 'action',
 	        action : '[Click] on Newsletter Subscription'
 	    };

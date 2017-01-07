@@ -9,6 +9,7 @@
 
 <ul>
 	<li>Category</li>
+	<li><a href="/category/">http://at-internet.local/category/ (NEW!)</a></li>
 	<li><a href="/category/category-1/">http://at-internet.local/category/category-1/</a></li>
 	<li><a href="/category/category-2/">http://at-internet.local/category/category-2/</a></li>
 	<li><a href="/en/category/category-2/">http://at-internet.local/en/category/category-2/</a></li>
@@ -20,6 +21,7 @@
 
 <ul>
 	<li>Tags</li>
+	<li><a href="/tag/">http://at-internet.local/tag/ (NEW)</a></li>
 	<li><a href="/tag/tag-1/">http://at-internet.local/tag/tag-1/</a></li>
 	<li><a href="/tag/tag-2/">http://at-internet.local/tag/tag-2/</a></li>
 	<li><a href="/en/tag/tag-2/">http://at-internet.local/en/tag/tag-2/</a></li>
@@ -59,6 +61,7 @@
 
 <ul>
 	<li>Video</li>
+	<li><a href="/programme/">http://at-internet.local/programme/ (NEW)</a></li>
 	<li><a href="/programme/category-1/video-1/">http://at-internet.local/programme/category-1/video-1/</a></li>
 	<li><a href="/en/programme/category-1/video-1/">http://at-internet.local/en/programme/category-1/video-1/</a></li>
 	<li><a href="/es/programme/category-1/video-2/">http://at-internet.local/es/programme/category-1/video-2/</a></li>
@@ -74,4 +77,9 @@
 	<li><a href="/de/contact-us/">http://at-internet.local/de/contact-us/</a></li>
 	<li><a href="/de/partners/">http://at-internet.local/de/partners/</a></li>
 	<li><a href="/es/editorial-chart">http://at-internet.local/es/editorial-chart/</a></li>
+</ul>
+
+<ul>
+	<li>Iframe Embed</li>
+	<li><a href="/embed/">http://at-internet.local/embed/</a></li>
 </ul>
