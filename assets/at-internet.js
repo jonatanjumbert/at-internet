@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com 
- * @version 1.1
+ * @version 1.1.1
  */
 
 /*
