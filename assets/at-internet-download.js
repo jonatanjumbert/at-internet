@@ -421,7 +421,7 @@ $(function() {
 		if($('input#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:embeddedLangCode').length > 0) {
 			var idioma = $('input#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:embeddedLangCode').val();
 			if(idioma !== "undefined" && idioma !== undefined && idioma != "") {
-				result[2] = idioma;
+				result[3] = idioma;
 			}
 		}
 		

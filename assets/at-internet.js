@@ -872,11 +872,11 @@ $(function() {
 	 */
 	$(document).on("click", 'form.subscription-form input.btn-success', function(e) {
 		var pageData = getPageData();
-		var current_page_name = "newsletter_subscription";
 		
 		var clickData = {
 	        elem: $(this).get(0),
-	        name: (typeof pageData.name !== "undefined" && typeof pageData.name !== undefined) ? current_page_name + '::' + pageData.name : current_page_name,
+	        name: "newsletter_subscription",
+    		chapter1: (typeof pageData.name !== "undefined" && typeof pageData.name !== undefined) ? pageData.name : '',
 	        type: 'action',
 	        action : '[Click] on Newsletter Subscription'
 	    };
