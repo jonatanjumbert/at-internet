@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com
- * @version 0.7.1
+ * @version 0.8
  */
 
 /*
@@ -601,6 +601,46 @@ $(function() {
 	};
 	
 	/**
+	 * Al clickar en el botón de Request del Tab Bulk Download, notificamos a la herramienta de analitica los detalles seleccionados por el usuario.
+	 */
+	var sendRequestOKBulkDownloadPageEvent = function() {
+		pageData = {name: "request_bulk_download_OK", chapter1: 'download', chapter2 : 'programme_details', level2: level2};
+		customVars = {
+			site : getVariablesSitioPersonalizadas(),
+			page : getVariablesPaginaRequest()
+		};
+		
+		var tag = initATInternetTag.getInstance();
+		tag.page.set(pageData);
+		tag.customVars.set(customVars);
+		
+		var id_usuario = getUserId();
+		if(id_usuario !== false) {
+			tag.identifiedVisitor.set({id: id_usuario});
+		}
+		
+		// Segun el plan de marcaje hay que enviar los tags relacionados de las página de producto.
+		if($('#tags-list').length > 0) {
+			var lista_de_tags = $('#tags-list').attr('data-tags');
+			if(lista_de_tags !== undefined && lista_de_tags !== "undefined") {
+				var lista_de_tags_split = lista_de_tags.split('|');
+				if(lista_de_tags_split.length > 0) {
+					tagsData = {keywords: lista_de_tags_split};
+					tag.tags.set(tagsData);
+					
+					debugData({action : 'Tagging Request Bulk Donwload OK page', pageData : pageData, customVars : customVars, tagsData : tagsData});
+				}
+			} else {
+				debugData({action : 'Tagging Request Bulk Donwload OK page', pageData : pageData, customVars : customVars});
+			}
+		} else {
+			debugData({action : 'Tagging Request Bulk Donwload OK page', pageData : pageData, customVars : customVars});
+		}
+		
+		tag.dispatch();
+	};
+	
+	/**
 	 * Al clickar en el botón de Copy Embed, notificamos a la herramienta de analitica los detalles seleccionados por el usuario.
 	 */
 	var sendEmbedOKPageEvent = function() {
@@ -762,7 +802,7 @@ $(function() {
 	 * Al clicar sobre el botón descargar solo subtitulos de un video notificamos a la herramienta de analitica 
 	 * los detalles de página vista y evento de click.
 	 */
-	$(document).on("click", 'button#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:j_idt66', function() {
+	$(document).on("click", 'button.ati-download-subtitle', function() {
 		sendDownloadOKPageEvent();
 		
 		var programTitle = getProgramTitle();
@@ -793,13 +833,20 @@ $(function() {
 	/**
 	 * Al clicar en el botón de Request, notificamos a la herramienta de analitica los detalles seleccionados por el usuario.
 	 */
-	$(document).on("click", "button#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:j_idt143[disabled!='disabled']", function() {
+	$(document).on("click", "button.ati-request-video[disabled!='disabled']", function() {
 		sendRequestOKPageEvent();
 		
 		var programTitle = getProgramTitle();
 		if(programTitle != "") {
 			sendClickEvent({elem: $(this).get(0), name: 'request', chapter1: 'download', chapter2 : programTitle, type: 'download', action : '[Click] on Request'});
 		}
+	});
+	
+	/**
+	 * Al clicar en el botón de Request, de Bulk download notificamos a la herramienta de analitica los detalles seleccionados por el usuario.
+	 */
+	$(document).on("click", "button.ati-request-bulk[disabled!='disabled']", function() {
+		sendRequestOKBulkDownloadPageEvent();
 	});
 	
 	/**
@@ -832,7 +879,7 @@ $(function() {
 	 * CLICKS
 	 * Cuando se clica el link de Download Thumbnail, hay que enviar un evento de click a AT-INTERNET.
 	 */
-	$(document).on("click", '#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:j_idt55', function(e) {
+	$(document).on("click", 'button.ati-download-thumb', function(e) {
 		var programTitle = getProgramTitle();
 
 		if(programTitle != "") {
