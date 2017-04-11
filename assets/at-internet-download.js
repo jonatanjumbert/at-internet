@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com
- * @version 0.8.1
+ * @version 0.8.2
  */
 
 /*
@@ -429,6 +429,20 @@ $(function() {
 	};
 	
 	/**
+	 * Variables personalizadas para cuando el usuario hace click en Bulk Download
+	 */
+	var getVariablesPaginaBulkDownload = function() {
+		var result = {};
+		
+		var programTitle = getProgramTitle();
+		if(programTitle != "") {
+			result[1] = programTitle;
+		}
+		
+		return result;
+	}
+	
+	/**
 	 * Devuelve el ID del usuario en sessión si no estamos en la página de login y si no se ha enviado previamente
 	 * ya a AT-Internet (expira en 1hora, entonces se debería volver a enviar).
 	 */
@@ -607,7 +621,7 @@ $(function() {
 		pageData = {name: "bulk_download_OK", chapter1: 'download', chapter2 : 'programme_details', level2: level2};
 		customVars = {
 			site : getVariablesSitioPersonalizadas(),
-			page : getVariablesPaginaRequest()
+			page : getVariablesPaginaBulkDownload()
 		};
 		
 		var tag = initATInternetTag.getInstance();
