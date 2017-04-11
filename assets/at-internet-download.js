@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com
- * @version 0.8
+ * @version 0.8.1
  */
 
 /*
@@ -604,7 +604,7 @@ $(function() {
 	 * Al clickar en el botón de Request del Tab Bulk Download, notificamos a la herramienta de analitica los detalles seleccionados por el usuario.
 	 */
 	var sendRequestOKBulkDownloadPageEvent = function() {
-		pageData = {name: "request_bulk_download_OK", chapter1: 'download', chapter2 : 'programme_details', level2: level2};
+		pageData = {name: "bulk_download_OK", chapter1: 'download', chapter2 : 'programme_details', level2: level2};
 		customVars = {
 			site : getVariablesSitioPersonalizadas(),
 			page : getVariablesPaginaRequest()
@@ -760,7 +760,7 @@ $(function() {
 				var tab_link = $('a', this);
 				if(tab_link !== "undefined") {
 					if(tab_link.html() !== "undefined" && tab_link.html() != "") {
-						var current_tab = tab_link.html().toLowerCase();
+						var current_tab = tab_link.html().toLowerCase().replace(' ', '_');
 						
 						pageData = {name: current_tab, chapter1: 'download', chapter2 : 'programme_details', chapter3 : programTitle, level2: level2};
 						customVars = {site: getVariablesSitioPersonalizadas()};
