@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com 
- * @version 1.1.1
+ * @version 1.1.2
  */
 
 /*
@@ -13,7 +13,8 @@
 var current_url = null;
 var debugData = null;
 var level2 = null;
-var producer = "";
+var jobCode = "";
+var publicationDate = "";
 
 /**
  * Se define la funcion de Callback del reproductor de Kaltura para poder enviar a
@@ -22,7 +23,7 @@ var producer = "";
 window.kalturaCallbackATInternet = function(playerId) {
 	var tag = new ATInternet.Tracker.Tag({log: "logc407", logSSL: "logs1407", secure: false, site: ((typeof site_id !== "undefined") ? site_id : 573738), domain: "xiti.com"});
 	var kdp = document.getElementById(playerId);
-	var mediaLabel = ((typeof producer !== "undefined" && producer != "") ? producer + "::" : "") + ((typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] + "::" : "") + ((typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] : "");
+	var mediaLabel = ((typeof publicationDate !== "undefined" && publicationDate != "") ? publicationDate + "::" : "") + ((typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] + "::" : "") + ((typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] + "(" + jobCode + ")" : "");
 
 	// Evento que se lanza cuando el video se reproduce por primera vez
 	kdp.kBind("firstPlay", function(data, id) {
@@ -884,11 +885,11 @@ $(function() {
 		sendClickEvent(clickData);
 	});
 	
-	if($('span.video-with-producer').length > 0) {
-		var productor = $('span.video-with-producer').attr('data-producer');
-		if(productor !== "undefined") {
-			producer = productor;
-		}
+	if($('#ati-jobcode').length > 0) {
+		jobCode = $('#ati-jobcode').html();
+	}
+	if($('#ati-publish_download_date').length > 0) {
+		publicationDate = $('#ati-publish_download_date').html();
 	}
 	
 	/** 
