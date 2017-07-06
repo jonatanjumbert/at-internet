@@ -2,8 +2,10 @@
  * Script que envía los datos de la analítica web al proveedor de AT-Internet. 
  * 
  * @author Jonatan Jumbert
- * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com 
- * @version 1.1.2
+ * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com
+ * @lastchange Se intercambia el orden de los parametros del mediaLabel enviados a AT-Internet por petición de Andread
+ * @dayLastChange 06/07/2017 
+ * @version 1.1.3
  */
 
 /*
@@ -23,7 +25,7 @@ var publicationDate = "";
 window.kalturaCallbackATInternet = function(playerId) {
 	var tag = new ATInternet.Tracker.Tag({log: "logc407", logSSL: "logs1407", secure: false, site: ((typeof site_id !== "undefined") ? site_id : 573738), domain: "xiti.com"});
 	var kdp = document.getElementById(playerId);
-	var mediaLabel = ((typeof publicationDate !== "undefined" && publicationDate != "") ? publicationDate + "::" : "") + ((typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] + "::" : "") + ((typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] + "(" + jobCode + ")" : "");
+	var mediaLabel = ((typeof current_url.url_path[2] !== "undefined") ? current_url.url_path[2] + "::" : "") + ((typeof publicationDate !== "undefined" && publicationDate != "") ? publicationDate + "::" : "") + ((typeof current_url.url_path[3] !== "undefined") ? current_url.url_path[3] + "(" + jobCode + ")" : "");
 
 	// Evento que se lanza cuando el video se reproduce por primera vez
 	kdp.kBind("firstPlay", function(data, id) {
