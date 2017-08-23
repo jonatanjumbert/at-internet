@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com
- * @version 0.8.2
+ * @version 0.8.3
  */
 
 /*
@@ -335,7 +335,7 @@ $(function() {
 	 * Si el usuario selecciona descargar un video o únicamente los subitulos, según el plan de marcaje se han definido variables 
 	 * personalizadas que hay que enviar a la herramienta de analítica.
 	 */
-	var getVariablesPaginaDownload = function() {
+	var getVariablesPaginaDownload = function(downloadType) {
 		var result = {};
 		
 		var programTitle = getProgramTitle();
@@ -348,6 +348,10 @@ $(function() {
 			if(idioma !== "undefined" && idioma !== undefined && idioma != "") {
 				result[2] = idioma;
 			}
+		}
+		
+		if(downloadType && downloadType !== "") {
+			result[3] = downloadType;
 		}
 		
 		return result;
@@ -537,11 +541,19 @@ $(function() {
 	 * Al clicar sobre el botón descargar solo subtitulos o de descarga de un video, 
 	 * notificamos a la herramienta de analitica los detalles de la descarga.
 	 */
-	var sendDownloadOKPageEvent = function() {
+	var sendDownloadOKPageEvent = function(self) {
 		pageData = {name: "download_OK", chapter1: 'download', chapter2 : 'programme_details', level2: level2};
+		
+		
+		var downloadType = 'original';
+		if(self) {
+			if($(self).data('download-type') && typeof $(self).data('download-type') !== "undefined") {
+				downloadType = $(self).data('download-type');
+			}
+		}
 		customVars = {
 			site : getVariablesSitioPersonalizadas(),
-			page : getVariablesPaginaDownload()
+			page : getVariablesPaginaDownload(downloadType)
 		};
 		
 		var tag = initATInternetTag.getInstance();
@@ -817,7 +829,7 @@ $(function() {
 	 * los detalles de página vista y evento de click.
 	 */
 	$(document).on("click", 'button.ati-download-subtitle', function() {
-		sendDownloadOKPageEvent();
+		sendDownloadOKPageEvent(this);
 		
 		var programTitle = getProgramTitle();
 		if(programTitle != "") {
@@ -833,7 +845,7 @@ $(function() {
 	 * los detalles de página vista y evento de click.
 	 */
 	$(document).on("click", 'div#_downloaddetail_WAR_europarltv_download_detail_\\:j_idt4\\:detailTabDownload a', function() {
-		sendDownloadOKPageEvent();
+		sendDownloadOKPageEvent(this);
 		
 		var programTitle = getProgramTitle();
 		if(programTitle != "") {
