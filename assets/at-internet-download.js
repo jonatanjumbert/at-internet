@@ -3,7 +3,7 @@
  * 
  * @author Jonatan Jumbert
  * @contact hola@jonatanjumbert.com - http://jonatanjumbert.com
- * @version 0.8.3
+ * @version 0.8.4
  */
 
 /*
@@ -544,11 +544,16 @@ $(function() {
 	var sendDownloadOKPageEvent = function(self) {
 		pageData = {name: "download_OK", chapter1: 'download', chapter2 : 'programme_details', level2: level2};
 		
-		
 		var downloadType = 'original';
 		if(self) {
-			if($(self).data('download-type') && typeof $(self).data('download-type') !== "undefined") {
-				downloadType = $(self).data('download-type');
+			if($(self).hasClass('ati-download-translated') && typeof $(self).hasClass('ati-download-translated') !== "undefined") {
+				downloadType = 'translated';
+			}
+			if($(self).hasClass('ati-download-original') && typeof $(self).hasClass('ati-download-original') !== "undefined") {
+				downloadType = 'original';
+			}
+			if($(self).hasClass('ati-download-subtitles') && typeof $(self).hasClass('ati-download-subtitles') !== "undefined") {
+				downloadType = 'subtitles';
 			}
 		}
 		customVars = {

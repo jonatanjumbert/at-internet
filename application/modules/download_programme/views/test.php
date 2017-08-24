@@ -396,31 +396,31 @@
 												<li class="clearfix">N01-PUB-170707-CMUPNV_1920x1080_29491_en.mov<a
 													href="http://kmc.europarltv.europa.eu/p/102/sp/10200/serveFlavor/entryId/0_7rou6qpy/v/2/flavorId/0_t2ogaog5/fileName/Coming_up:_Deforestation,_Panama_Papers,_media_pluralism_and_more_(FB)_(Source).mov/forceproxy/true/name/a.mov"
 													title="Download N01-PUB-170707-CMUPNV_1920x1080_29491_en.mov"
-													target="_blank" class="btn btn-link pull-right" data-download-type="original">Download <span
+													target="_blank" class="btn btn-link pull-right ati-download-translated">Download <span
 														class="epicon-arrow-circle-down"></span></a>
 												</li>
 												<li class="clearfix">N01-PUB-170707-CMUPNV_1920x1080_3929_en.mp4<a
 													href="http://kmc.europarltv.europa.eu/p/102/sp/10200/serveFlavor/entryId/0_7rou6qpy/v/2/flavorId/0_y7h23jkz/fileName/Coming_up:_Deforestation,_Panama_Papers,_media_pluralism_and_more_(FB)_(EuroparlTV_HD_4000).mp4/forceproxy/true/name/a.mp4"
 													title="Download N01-PUB-170707-CMUPNV_1920x1080_3929_en.mp4"
-													target="_blank" class="btn btn-link pull-right" data-download-type="subtitle">Download <span
+													target="_blank" class="btn btn-link pull-right ati-download-translated">Download <span
 														class="epicon-arrow-circle-down"></span></a>
 												</li>
 												<li class="clearfix">N01-PUB-170707-CMUPNV_1280x720_2628_en.mp4<a
 													href="http://kmc.europarltv.europa.eu/p/102/sp/10200/serveFlavor/entryId/0_7rou6qpy/v/2/flavorId/0_pfc7ryi2/fileName/Coming_up:_Deforestation,_Panama_Papers,_media_pluralism_and_more_(FB)_(EuroparlTV_HD_2500).mp4/forceproxy/true/name/a.mp4"
 													title="Download N01-PUB-170707-CMUPNV_1280x720_2628_en.mp4"
-													target="_blank" class="btn btn-link pull-right" data-download-type="translated">Download <span
+													target="_blank" class="btn btn-link pull-right ati-download-original">Download <span
 														class="epicon-arrow-circle-down"></span></a>
 												</li>
 												<li class="clearfix">N01-PUB-170707-CMUPNV_1024x576_1403_en.mp4<a
 													href="http://kmc.europarltv.europa.eu/p/102/sp/10200/serveFlavor/entryId/0_7rou6qpy/v/2/flavorId/0_g8g70znl/fileName/Coming_up:_Deforestation,_Panama_Papers,_media_pluralism_and_more_(FB)_(EuroparlTV_HD_1536).mp4/forceproxy/true/name/a.mp4"
 													title="Download N01-PUB-170707-CMUPNV_1024x576_1403_en.mp4"
-													target="_blank" class="btn btn-link pull-right" data-download-type="original">Download <span
+													target="_blank" class="btn btn-link pull-right ati-download-subtitles">Download <span
 														class="epicon-arrow-circle-down"></span></a>
 												</li>
 												<li class="clearfix">N01-PUB-170707-CMUPNV_640x360_832_en.mp4<a
 													href="http://kmc.europarltv.europa.eu/p/102/sp/10200/serveFlavor/entryId/0_7rou6qpy/v/2/flavorId/0_2jkj44un/fileName/Coming_up:_Deforestation,_Panama_Papers,_media_pluralism_and_more_(FB)_(EuroparlTV_HD_768).mp4/forceproxy/true/name/a.mp4"
 													title="Download N01-PUB-170707-CMUPNV_640x360_832_en.mp4"
-													target="_blank" class="btn btn-link pull-right" data-download-type="original">Download <span
+													target="_blank" class="btn btn-link pull-right">Download <span
 														class="epicon-arrow-circle-down"></span></a>
 												</li>
 												<li class="clearfix">N01-PUB-170707-CMUPNV_640x360_455_en.mp4<a
@@ -1162,7 +1162,7 @@
 	<script type="text/javascript">var site_id="577958";var level2Id=2;var user_id=23020;</script>
 	<script src="//tag.aticdn.net/577958/smarttag.js"></script>
 	<script type="text/javascript"
-		src="http://at-internet.local/assets/at-internet-download.js?v=0.8.3"></script>
+		src="http://at-internet.local/assets/at-internet-download.js?v=0.8.4"></script>
 	<script
 		src="https://www.europarltv.europa.eu/notifications-portlet/notifications/js/main.js?browserId=other&amp;minifierType=js&amp;languageId=en_US&amp;b=6210&amp;t=1503003502000"
 		type="text/javascript"></script>
